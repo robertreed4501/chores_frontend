@@ -21,6 +21,8 @@ header {
 .headerImg {
   height: 150px;
   width: 100px;
+  margin-left: 0%;
+  margin-right: 100%;
 }
 
 .Card {
