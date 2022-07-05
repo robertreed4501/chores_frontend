@@ -1,9 +1,13 @@
 import React from "react";
 
-export const Card = () =>{
+interface cardProps {
+    name:string
+}
+
+export const Card = (name :cardProps) =>{
     return(
         <div className="Card">
-            <h3>Jayne's Chores</h3>
+            <h3>{name.name}'s Chores</h3>
             <table>
                 <tr>
                     <th>Chore</th>
