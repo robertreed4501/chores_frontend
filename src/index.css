@@ -15,14 +15,21 @@ code {
 
 header {
   background-color: lightcoral;
-  align-content: flex-start;
+  height: -moz-fit-content;
+}
+
+
+.headerButtonDiv{
+  display: inline;
+  align-self: flex-end;
 }
 
 .headerImg {
-  height: 150px;
-  width: 100px;
+  height: 65px;
+  width: 400px;
   margin-left: 0%;
   margin-right: 100%;
+  display: inline;
 }
 
 .Card {
