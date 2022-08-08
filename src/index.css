@@ -32,6 +32,10 @@ header {
   display: inline;
 }
 
+.errorMsg {
+
+}
+
 .Card {
   background-color: blanchedalmond;
   width: fit-content;
@@ -39,11 +43,12 @@ header {
   padding: 15px;
   border-radius: 15px;
   border-style: solid;
-  border-color: chocolate;
-  border-width: 1px;
+  border-color: #f3d2a6;
+  border-width: 2mm;
   -moz-box-shadow: 0 0 20px 5px #999;
   -webkit-box-shadow: 20px 40px 20px 5px #999999;
   margin: 19px;
+  opacity: 100%;
 }
 
 li {
