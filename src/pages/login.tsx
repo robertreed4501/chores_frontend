@@ -2,11 +2,13 @@ import React, {useContext} from "react";
 import {useRef, useState, useEffect} from "react";
 import {AuthContext} from "../context/AuthProvider";
 import axios from "../api/axios";
+import {Link, Navigate, useNavigate} from "react-router-dom";
 const LOGIN_URL = '/login';
 
 export const Login = () => {
+
     // @ts-ignore
-    const { setAuth } = useContext(AuthContext);
+    const [auth, setAuth] = useContext(AuthContext);
     const userRef = useRef() as React.MutableRefObject<HTMLInputElement>;
     const errRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
@@ -14,6 +16,7 @@ export const Login = () => {
     const [password, setPassword] = useState('');
     const [err, setErr] = useState('');
     const [success, setSuccess] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         // @ts-ignore
@@ -24,6 +27,8 @@ export const Login = () => {
         setErr('');
     }, [user, password]);
 
+
+
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
@@ -31,24 +36,35 @@ export const Login = () => {
             const response = await axios.post(
                 LOGIN_URL,
                 JSON.stringify({username: user, password}),
+                //{"username":{user}, "password":{password}},
                 {
-                    headers: { 'Content_Type': 'application/json' },
-                    withCredentials: true
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: false,
                 }
             );
-            console.log(JSON.stringify(response))
-            setUser('');
-            setPassword('');
-            setSuccess(true);
+            console.log(JSON.stringify(response));
+            if (response.data.error){
+                console.log(response.data.error)
+            }else{
+                console.log("logged in with token:" + response.data.userResponse.key);
+                setAuth(response.data.userResponse);
+                setUser('');
+                setPassword('');
+                setSuccess(true);
+                response.data.userResponse.role === "USER" ?
+                navigate("/user", {replace: false}) : navigate("/dashboard")
+            }
+
         }catch (err){
 
         }
-
+         //success ? navigate("/user", {replace: true}) : navigate("/user", {replace: true});
 
     }
 
     return(
     <section>
+        {success ? <Navigate to="user" /> : null}
 
         <p ref={errRef} className={err ? "errorMsg" : "offscreen"} aria-live="assertive">{err}</p>
         <h1>Sign In</h1>
@@ -74,7 +90,7 @@ export const Login = () => {
             <button>Sign In</button>
         </form>
         <p>
-            Need an Account?<br />
+            <Link to="/register">Need an Account?</Link><br />
 
         </p>
     </section>
