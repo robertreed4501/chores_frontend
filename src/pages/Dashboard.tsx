@@ -2,20 +2,43 @@ import React, {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import {AuthContext} from "../context/AuthProvider";
 
+type dashCard = [{
+    userId: Number
+    name: String
+    chores: [{
+        done: String
+        firstName: String
+        frequency: String
+        groupId: Number
+        id: Number
+        name: String
+        userId: Number
+    }]
+}]
+
 
 export const Dashboard = () => {
     const [data, setData] = useState([{
         userId: null,
         name: "",
-        chores: [{
-        done: "",
-        firstName: "",
-        frequency: "",
-        groupId: null,
-        id: null,
+        chores: [[{
+            done: "",
+            firstName: "",
+            frequency: "",
+            groupId: null,
+            id: null,
+            name: "",
+            userId: null
+        }]]
+    }]);
+
+    const [view, setView] = useState([{
+        userId: null,
         name: "",
-        userId: null}]
-            }]);
+        chores:[{
+
+        }]
+    }])
 
 
     // @ts-ignore
@@ -37,19 +60,15 @@ export const Dashboard = () => {
     }
 
     console.log(data);
-
-
-
-
-
-
     return (
 
         <>{data.map(user => (
             <div key={user.userId} className="Card">
-                <h2>{user.name}'s chores</h2>
-                {user.chores.map(chore => (
-                    <li>{chore.name}  -  {chore.done}</li>
+                <h2 key={user.userId}>{user.name}'s chores</h2>
+                {user.chores.map(choreList => (// @ts-ignore
+                    choreList.at(0) ? <li key={choreList.at(0).id}>{choreList.at(0).name} <input type="checkbox"/></li> : <li>error</li>
+
+                    /*<li key={chore.id}>{chore.name}  -  {chore.done}</li>*/
                 ))}
             </div>
         ))}

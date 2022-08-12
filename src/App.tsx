@@ -6,7 +6,8 @@ import OtherTest from "./components/OtherTest";
 import {Login} from "./pages/login";
 import {User as UserPage} from "./pages/User";
 import {Register} from "./pages/Register";
-import {Dashboard} from "./pages/Dashboard"
+import {Dashboard} from "./pages/Dashboard";
+
 
 function App() {
   return (
