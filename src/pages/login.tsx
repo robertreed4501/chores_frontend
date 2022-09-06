@@ -3,6 +3,8 @@ import {useRef, useState, useEffect} from "react";
 import {AuthContext} from "../context/AuthProvider";
 import axios from "../api/axios";
 import {Link, Navigate, useNavigate} from "react-router-dom";
+import Cookies from "js-cookie"
+
 const LOGIN_URL = '/login';
 
 export const Login = () => {
@@ -51,6 +53,8 @@ export const Login = () => {
                 setUser('');
                 setPassword('');
                 setSuccess(true);
+                Cookies.set('key', response.data.userResponse.key, { expires: 7});
+                console.log(Cookies.get('key') + "  - from login.tsx")
                 response.data.userResponse.role === "USER" ?
                 navigate("/user", {replace: false}) : navigate("/dashboard")
             }
