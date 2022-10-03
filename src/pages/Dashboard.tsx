@@ -2,6 +2,10 @@ import React, {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import {AuthContext} from "../context/AuthProvider";
 import Cookies from "js-cookie";
+import {useNavigate} from "react-router-dom";
+import { Table } from "react-bootstrap";
+import {AdminContext} from "../context/AdminProvider";
+import {log} from "util";
 
 type dashCard = [{
     userId: any
@@ -20,7 +24,7 @@ type dashCard = [{
 
 
 export const Dashboard = () => {
-    const [data, setData] = useState<dashCard>([{
+    const [data, setData] = useState<dashCard>(/*[{
         userId: 0,
         name: "",
         chores: [[{
@@ -33,17 +37,22 @@ export const Dashboard = () => {
             name: "",
             userId: 0
         }]]
-    }]);
+    }]*/);
 
 
 
 
     // @ts-ignore
     const [auth, setAuth] = useContext(AuthContext);
-    console.log(auth);
+    // @ts-ignore
+    const [dashboard, setDashboard] = useContext(AdminContext);
+
+    console.log(auth.id + "from dashboard after loading useContext(AuthContext)");
+
+    const navigate = useNavigate();
 
     useEffect(() => {
-        getResponse();
+        getResponse().then(r => null);
     }, []);
 
 
@@ -56,6 +65,8 @@ export const Dashboard = () => {
         await axios.get('http://10.0.0.18:8080/api/dashboard', {withCredentials: false, headers:{'key': key}}).then(
             (response) => {
                 setData(response.data)
+                console.log("setting data - dashboard.tsx getResponse()")
+                setDashboard(response.data)
             }
         ).catch((error) => console.log(error));
     }
@@ -69,16 +80,26 @@ export const Dashboard = () => {
         // @ts-ignore
         await axios.post('http://10.0.0.18:8080/api/receipts', {"assignmentId": id, "arb": 1}, {withCredentials: false, headers:{'key': key}}).then(
             (response) => {
-                response.data.message === 'receipt added.' ? getResponse() : console.log('receipt not added apparently...')
+                console.log(response.data.message)
+                response.data.message === 'receipt added.' ?
+                    getResponse()
+
+
+                : console.log ('receipt not added apparently...')
+
             }
         ).catch()
+    }
+
+    const handleClick = () => {
+        navigate("/assignchores", {replace: false})
     }
 
     console.log(data);
     // @ts-ignore
     return (
 
-        <>{data.map(user => (
+        <>{data?.map(user => (
             <div key={user.userId} className="Card"><>
                 <h2 key={user.userId}>{user.name}'s chores</h2>
                 <table>
@@ -106,6 +127,8 @@ export const Dashboard = () => {
                 </>
             </div>
         ))}
+            <input type={"button"} onClick={handleClick} value="click for assignchores"/>
+
         </>
     )
 }

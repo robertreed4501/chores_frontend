@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
         await axios.get('http://10.0.0.18:8080/api/user', {withCredentials: false, headers:{'key': key}}).then(
             (response) => {
                 setAuth(response.data.UserResponse)
+                console.log(response.data.UserResponse)
             }
         ).catch((error) => console.log(error));
     }

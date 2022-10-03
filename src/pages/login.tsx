@@ -50,6 +50,8 @@ export const Login = () => {
             }else{
                 console.log("logged in with token:" + response.data.userResponse.key);
                 setAuth(response.data.userResponse);
+                console.log(auth.id + " auth after setAuth")
+                console.log(response.data.userResponse.groupId + " response.data.userResponse")
                 setUser('');
                 setPassword('');
                 setSuccess(true);
