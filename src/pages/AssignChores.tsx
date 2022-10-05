@@ -30,7 +30,7 @@ export const AssignChores = () => {
         id: number
         name: string
         choreLevel: "EASY" | "MEDIUM" | "HARD"
-        frequency: "WEEKLY" | "MONTHLY" | "DAILY"
+        multiplier: Number
         scope: "PERSONAL" | "GROUP"
         selected: boolean
     }]
@@ -41,7 +41,7 @@ export const AssignChores = () => {
         chores: [[{
             done: String
             firstName: String
-            frequency: String
+            multiplier: Number
             groupId: any
             assignmentId: any
             id: any
@@ -52,7 +52,7 @@ export const AssignChores = () => {
 
     const [userList, setUserList] = useState<UserListType>();
     const [selectedUser, setSelectedUser] = useState<UserType>();
-    const [choreList, setChoreList] = useState<ChoreListType>([{id: 0, name:"", choreLevel:"EASY", frequency:"WEEKLY", scope:"PERSONAL", selected: false}]);
+    const [choreList, setChoreList] = useState<ChoreListType>([{id: 0, name:"", choreLevel:"EASY", multiplier: 1, scope:"PERSONAL", selected: false}]);
     const [assignedChoresList, setAssignedChoresList] = useState<ChoreListType>();
     const [searchText, setSearchText] = useState<string>('');
     const [selectedChores, setSelectedChores] = useState<number[]>([]);
@@ -143,12 +143,25 @@ export const AssignChores = () => {
 
     }
 
-    const handleAssignChores = () => {
-        !selectedUser ? alert("must select a user."):
-        console.log("here's where we would axios.post to add assignments\n these assignments:" + selectedChores + " for " + selectedUser.firstName)
-        selectedChores.map(chore => {
+    const handleAssignChores = async () => {
 
-        });
+        if (!selectedUser) {
+            alert("select a user")
+            return null;
+        }
+        const response = await axios.post(
+            'api/assignments/add',
+            JSON.stringify({userId: selectedUser.id, groupId: auth.groupId, choreId: selectedChores}),
+            {
+                headers: { 'Content-Type': 'application/json' },
+                withCredentials: false,
+            });
+
+        // @ts-ignore
+        setDashboard(response.data);
+
+
+
     }
 
     const handleDelete = async (event: React.MouseEvent<HTMLButtonElement>) => {
