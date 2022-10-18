@@ -7,6 +7,8 @@ import Select from "react-select";
 import {Button, Container, Table} from "react-bootstrap";
 import {render} from "react-dom";
 import {AdminContext} from "../context/AdminProvider";
+import {Link, useNavigate} from "react-router-dom";
+import {AddChoreModal} from "../components/AddChoreModal";
 
 
 export const AssignChores = () => {
@@ -14,6 +16,11 @@ export const AssignChores = () => {
     type UserListType = [{
         id: number
         firstName: string
+        lastName: string
+        email: string
+        appUserRole: string
+        apiKey: string
+        groupId: number
     }]
 
     type selectedUserList = [{
@@ -69,7 +76,7 @@ export const AssignChores = () => {
     //get all users in group to list in dropdown
     const getUserList = async (userId: number | undefined) => {
         // @ts-ignore
-        await axios.get('/api/user/mygroup?id=' + auth.id, {withCredentials: false, headers:{'key': key}}).then(
+        await axios.get('/api/user/mygroup?id=' + auth.groupId, {withCredentials: false, headers:{'key': key}}).then(
             (response) => {
                 console.log(response.data);
                 setUserList(response.data);
@@ -104,7 +111,7 @@ export const AssignChores = () => {
     },[])
 
     useEffect(() => {
-
+        getChoreList(auth.groupId).then(r => null);
     }, [dashboard])
     //value=user.id ,
 
@@ -159,13 +166,14 @@ export const AssignChores = () => {
 
         // @ts-ignore
         setDashboard(response.data);
+        setSelectedChores([]);
 
 
 
     }
 
     const handleDelete = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
+
         console.log(event.currentTarget.id);
         const response = await axios.post(
             'api/assignments/delete',
@@ -180,16 +188,21 @@ export const AssignChores = () => {
 
     }
 
+    let navigate = useNavigate();
+    const handleClick = () => {
+        navigate("/useradmin", {replace: false})
+    }
 
     return (
         <>
-            <Container>
+
             <Select
                 options={selectUserList}
                 onChange={handleChange}
             />
             <input type={"text"} onChange={handleSearch}/>
-            <Table striped bordered hover responsive variant="sm">
+            <div className="tableContainer">
+            <Table striped variant="sm">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -204,7 +217,13 @@ export const AssignChores = () => {
                     if (searchText === ''){
                         return(
                             <tr key={chore.id}>
-                                <td><input key={chore.id} id={chore.id.toString()} type={"checkbox"} onChange={handleCheck} /></td>
+                                <td><input
+                                    key={chore.id}
+                                    id={chore.id.toString()}
+                                    type={"checkbox"}
+                                    onChange={handleCheck}
+                                    checked={selectedChores.includes(chore.id)}
+                                /></td>
                                 <td>{chore.name}</td>
                                 <td>{chore.choreLevel.toLowerCase()}</td>
                                 <td>{chore.scope.toLowerCase()}</td>
@@ -214,7 +233,13 @@ export const AssignChores = () => {
                         if (chore.name.toLowerCase().includes(searchText.toLowerCase())){
                             return(
                                 <tr key={chore.id}>
-                                    <td>{chore.id}</td>
+                                    <td><input
+                                        key={chore.id}
+                                        id={chore.id.toString()}
+                                        type={"checkbox"}
+                                        onChange={handleCheck}
+                                        checked={selectedChores.includes(chore.id)}
+                                    /></td>
                                     <td>{chore.name}</td>
                                     <td>{chore.choreLevel.toLowerCase()}</td>
                                     <td>{chore.scope.toLowerCase()}</td>
@@ -226,8 +251,11 @@ export const AssignChores = () => {
 
                 </tbody>
             </Table>
-
+            </div>
                 <input type={"button"} key={"assignChoresButton"} name={"assignChoresButton"} onClick={handleAssignChores} value={"Add Chores"}/>
+                <Button variant={"outline-primary"} onClick={handleAssignChores}>Add Chores</Button>
+
+                <AddChoreModal />
                 <Table striped bordered hover responsive variant="sm">
                     <thead>
                     <tr>
@@ -249,7 +277,7 @@ export const AssignChores = () => {
                                             <td>{choreArray.at(0)?.assignmentId}</td>
                                             <td>{choreArray.at(0)?.name}</td>
                                             <td>{choreArray.length}</td>
-                                            <td><Button id={choreArray.at(0)?.assignmentId} value={"delete"} onClick={handleDelete} /></td>
+                                            <td><Button variant={"outline-primary"} id={choreArray.at(0)?.assignmentId} value={"delete"} onClick={handleDelete}>Delete</Button></td>
                                         </tr>
                                     )
 
@@ -261,8 +289,8 @@ export const AssignChores = () => {
 
                     </tbody>
                 </Table>
+                <Link to={"/useradmin"}>to user admin</Link>
 
-            </Container>
         </>
     )
 }
