@@ -3,7 +3,7 @@ import axios from "axios";
 import {AuthContext} from "../context/AuthProvider";
 import Cookies from "js-cookie";
 import {useNavigate} from "react-router-dom";
-import { Table } from "react-bootstrap";
+import {Col, Container, Row, Table} from "react-bootstrap";
 import {AdminContext} from "../context/AdminProvider";
 import {log} from "util";
 
@@ -99,37 +99,41 @@ export const Dashboard = () => {
     // @ts-ignore
     return (
 
-        <>{data?.map(user => (
-            <div key={user.userId} className="Card"><>
-                <h2 key={user.userId}>{user.name}'s chores</h2>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Chore</th>
-                        <th>Done</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {user.chores.map(choreList => (
-                        <tr key={choreList.at(0)?.id}>
-                            <td><li key={choreList.at(0)?.id}>{choreList.at(0)?.name} </li></td>
-                            <td key={choreList.at(0)?.id} align="right">
-                            {choreList.map(chore =>(
-                                <input key={chore.assignmentId} type="checkbox" defaultChecked={chore.done === 'true'} onClick={() => handleCheck(chore.assignmentId)}/>
+        <Container><Row>{data?.map(user => (
+            <Col md="auto" key={user.userId}>
+                <div key={user.userId} className="Card">
+                    <>
+                        <h2 key={user.userId}>{user.name}'s chores</h2>
 
+                        <Table className="table-sm">
+                            <thead>
+                            <tr>
+                                <th>Chore</th>
+                                <th>Done</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {user.chores.map(choreList => (
+                                <tr key={choreList.at(0)?.id}>
+                                    <td><li key={choreList.at(0)?.id}>{choreList.at(0)?.name} </li></td>
+                                    <td key={choreList.at(0)?.id} align="right">
+                                    {choreList.map(chore =>(
+                                        <input key={chore.assignmentId} type="checkbox" defaultChecked={chore.done === 'true'} onClick={() => handleCheck(chore.assignmentId)}/>
+
+                                    ))}
+                                    </td>
+                                </tr>
+                                /*<li key={chore.id}>{chore.name}  -  {chore.done}</li>*/
                             ))}
-                            </td>
-                        </tr>
-                        /*<li key={chore.id}>{chore.name}  -  {chore.done}</li>*/
-                    ))}
-                    </tbody>
-                </table>
-                </>
-            </div>
-        ))}
+                            </tbody>
+                        </Table>
+                    </>
+                </div>
+            </Col>
+        ))}</Row>
             <input type={"button"} onClick={handleClick} value="click for assignchores"/>
 
-        </>
+        </Container>
     )
 }
 
