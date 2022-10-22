@@ -57,7 +57,7 @@ export const Login = () => {
                 setUser('');
                 setPassword('');
                 setSuccess(true);
-                Cookies.set('key', response.data.userResponse.key, { expires: 7});
+                Cookies.set('key', response.data.userResponse.key, { expires: 7, sameSite:"none"});
                 console.log(Cookies.get('key') + "  - from login.tsx")
                 response.data.userResponse.role === "USER" ?
                     navigate("/user", {replace: false}) :
