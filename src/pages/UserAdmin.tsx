@@ -35,7 +35,7 @@ export const UserAdmin = () => {
 
     const getUserInfo = async () => {
         // @ts-ignore
-        const response = await axios.get('/api/user/mygroup?id=' + auth.id, {withCredentials: false, headers:{'key': key}});
+        const response = await axios.get('/api/user/mygroup?id=' + auth.groupId, {withCredentials: false, headers:{'key': key}});
         // @ts-ignore
         setUserInfo(response.data);
     }
