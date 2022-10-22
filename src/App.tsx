@@ -16,6 +16,7 @@ import {Button, Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {UserAdmin} from "./pages/UserAdmin";
 import Cookies from "js-cookie";
 import {AuthContext} from "./context/AuthProvider";
+import {LoginModal} from "./components/LoginModal";
 
 
 
@@ -25,27 +26,30 @@ function App() {
     const [auth, setAuth] = useContext(AuthContext);
     const navigate = useNavigate();
 
-
     const handleLogout = () => {
         Cookies.remove('key');
-        setAuth(null);
+        setAuth({});
         navigate("/login");
     }
+
     const handleLogin = () => {
 
     }
-    const handleRegister = () => {
 
+    const handleRegister = () => {
+        navigate("/register");
     }
 
     const createNavbar = () => {
-        if (!auth){
+        if (!auth.id){
             return(
             <><Nav className="me-auto">
                 <Nav.Link as={Link} to="/about">About</Nav.Link>
-            </Nav><Nav>
-                <Button className="btn btn-primary" onClick={handleRegister}>Register</Button>
-                <Button className="btn btn-primary" onClick={handleLogin}>Login</Button>
+            </Nav>
+                <Nav>
+                <Button className="btn btn-primary m-2" onClick={handleRegister}>Register</Button>
+
+                <LoginModal />
             </Nav></>)
         }else if (auth.role === 'USER'){
             return(
@@ -54,7 +58,8 @@ function App() {
                 <Nav.Link as={Link} to="/messages">Messages</Nav.Link>
                 <Nav.Link as={Link} to="/help">Help</Nav.Link>
 
-            </Nav><Nav>
+            </Nav>
+                <Nav>
                 <Button className="btn btn-primary" onClick={handleLogout}>Logout</Button>
             </Nav></>)
         }else if (auth.role === 'ADMIN'){
@@ -96,19 +101,21 @@ function App() {
                 </Container>
             </Navbar>
 
-            <Container>
+            <Container className="align-items-center align-self-center mx-auto">
                 <Routes>
                     <Route element={<PrivateRoutes/>}>
-                        <Route path="/" element={<TestElement/>} />
+
                         <Route path="/test" element={<OtherTest />} />
 
                         <Route path="/user" element={<UserPage />} />
-                        <Route path="/register" element={<Register />} />
+
 
                         <Route path="/useradmin" element={<UserAdmin />} />
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/assignchores" element={<AssignChores />} />
                     </Route>
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/" element={<TestElement/>} />
                     <Route path="/login" element={<Login />} />
                 </Routes>
                 <p>Hello?</p>
