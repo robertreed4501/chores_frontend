@@ -17,7 +17,7 @@ html {
   display: block;
   child-align: middle;
 }
-
+*/
 .tableContainer{
 
   background-color: white;
@@ -33,7 +33,7 @@ Table thead{
   top: 0px;
   margin: 0 0 0 0;
 }
-
+/*
 div{
   margin: 15px;
 }
@@ -80,6 +80,10 @@ header {
   -webkit-box-shadow: 20px 40px 20px 5px #999999;
   margin: 19px;
   opacity: 100%;
+}
+
+Button {
+  margin: 9px;
 }
 /*
 h2 {
