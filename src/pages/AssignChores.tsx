@@ -252,21 +252,20 @@ export const AssignChores = () => {
                 </tbody>
             </Table>
             </div>
-                <input type={"button"} key={"assignChoresButton"} name={"assignChoresButton"} onClick={handleAssignChores} value={"Add Chores"}/>
-                <Button variant={"outline-primary"} onClick={handleAssignChores}>Add Chores</Button>
+                <input type={"button"} key={"assignChoresButton"} name={"assignChoresButton"} onClick={handleAssignChores} value={"Add Chores"} className="m-2"/>
+                <Button variant={"outline-primary"} onClick={handleAssignChores} className="m-2">Add Chores</Button>
 
                 <AddChoreModal />
                 <Table striped bordered hover responsive variant="sm">
                     <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Chore Name</th>
-                        <th>Level</th>
-                        <th>Scope</th>
-                    </tr>
+                        <tr>
+                            <th>#</th>
+                            <th>Chore Name</th>
+                            <th>Level</th>
+                            <th>Scope</th>
+                        </tr>
                     </thead>
                     <tbody>
-
                     {dashboard?.map(user => {
                         console.log(selectedChores)
                         if (user.userId === selectedUser?.id) {
@@ -280,13 +279,11 @@ export const AssignChores = () => {
                                             <td><Button variant={"outline-primary"} id={choreArray.at(0)?.assignmentId} value={"delete"} onClick={handleDelete}>Delete</Button></td>
                                         </tr>
                                     )
-
                                 })
                             );
                         }
-
-                    })}
-
+                    })
+                    }
                     </tbody>
                 </Table>
                 <Link to={"/useradmin"}>to user admin</Link>
