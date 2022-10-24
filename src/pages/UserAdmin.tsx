@@ -3,6 +3,7 @@ import axios from "../api/axios";
 import {AuthContext} from "../context/AuthProvider";
 import Cookies from "js-cookie";
 import Select from "react-select";
+import {AddUserModal} from "../components/AddUserModal";
 
 export const UserAdmin = () => {
 
@@ -82,6 +83,7 @@ export const UserAdmin = () => {
                             <h4>{"API Key: " + user.key}</h4>
                         </div>:
                          null) : <h3>Select a user</h3>}
+            <AddUserModal />
         </div>
     );
 }
