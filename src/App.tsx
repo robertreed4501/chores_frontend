@@ -32,10 +32,6 @@ function App() {
         navigate("/");
     }
 
-    const handleLogin = () => {
-
-    }
-
     const handleRegister = () => {
         navigate("/register");
     }
@@ -62,7 +58,7 @@ function App() {
                 <Nav>
                 <Button className="btn btn-primary" onClick={handleLogout}>Logout</Button>
             </Nav></>)
-        }else if (auth.role === 'ADMIN'){
+        }else if (auth.role === 'ADMIN' || auth.role === 'OWNER'){
             return(
             <><Nav className="me-auto">
 
@@ -76,6 +72,7 @@ function App() {
             </Nav></>)
         }
     }
+
   // @ts-ignore
     return (
         <>
@@ -85,10 +82,7 @@ function App() {
                 integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
                 crossOrigin="anonymous"
             />
-            {/*
-            admin navbar
-            if !auth no navbar, if auth.role === USER show user navbar, else if auth.role === ADMIN, show this one
-            */}
+
             <Navbar bg="dark" expand="lg" className="bg-dark navbar-dark ">
                 <Container className="rounded shadow-lg">
                     <Navbar.Brand as={Link} to="/">ChoresGalore</Navbar.Brand>
