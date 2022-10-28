@@ -16,15 +16,20 @@ export const Register = () => {
     // @ts-ignore
     const handleSubmit = (event) => {
         const form = event.currentTarget;
+
         if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
+            return null;
+        } else {
+            event.preventDefault();
+            setValidated(true);
+            registerUser().then(() => {
+                return null;
+            });
         }
 
-        setValidated(true);
-        registerUser().then(() => {
-            navigate("/");
-        });
+
 
     };
 
@@ -38,6 +43,7 @@ export const Register = () => {
         );
 
         alert(response.data);
+        response.data === "registered" ? navigate("/") : setEmail('');
     }
 
 
@@ -102,6 +108,7 @@ export const Register = () => {
                                     type="password"
                                     placeholder="Password"
                                     required
+                                    minLength={8}
                                     onChange={event => setPassword(event.currentTarget.value)}/>
                                 <Form.Control.Feedback type="invalid">
                                     Please provide a valid password.
