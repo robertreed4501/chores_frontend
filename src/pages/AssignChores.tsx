@@ -188,6 +188,12 @@ export const AssignChores = () => {
 
     }
 
+    const handleDeleteChore = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        const response = await axios.delete("/api/chores/delete/" + event.currentTarget.id);
+        alert(response.data)
+        await getChoreList(auth.groupId);
+    }
+
     let navigate = useNavigate();
     const handleClick = () => {
         navigate("/useradmin", {replace: false})
@@ -209,6 +215,7 @@ export const AssignChores = () => {
                         <th>Chore Name</th>
                         <th>Level</th>
                         <th>Scope</th>
+                        <th> </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -227,6 +234,7 @@ export const AssignChores = () => {
                                 <td>{chore.name}</td>
                                 <td>{chore.choreLevel.toLowerCase()}</td>
                                 <td>{chore.scope.toLowerCase()}</td>
+                                <td><Button variant={"outline-primary"} id={chore.id.toString()} value={"delete"} onClick={handleDeleteChore}>Delete</Button></td>
                             </tr>)
                     }
                     else{
@@ -243,6 +251,7 @@ export const AssignChores = () => {
                                     <td>{chore.name}</td>
                                     <td>{chore.choreLevel.toLowerCase()}</td>
                                     <td>{chore.scope.toLowerCase()}</td>
+                                    <td><Button variant={"outline-primary"} id={chore.id.toString()} value={"delete"} onClick={handleDeleteChore}>Delete</Button></td>
                                 </tr>)
                         }
                     }
