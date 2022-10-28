@@ -29,7 +29,7 @@ function App() {
     const handleLogout = () => {
         Cookies.remove('key');
         setAuth({});
-        navigate("/login");
+        navigate("/");
     }
 
     const handleLogin = () => {
