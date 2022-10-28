@@ -5,8 +5,10 @@ import {AuthContext} from "../context/AuthProvider";
 import Cookies from "js-cookie";
 import Select from "react-select";
 import {AddUserModal} from "../components/AddUserModal";
-import {Button, Container, Table} from "react-bootstrap";
+import {Button, Col, Container, Row, Table} from "react-bootstrap";
 import {EditUserModal} from "../components/EditUserModal";
+import {Dashboard} from "./Dashboard";
+import { Messages } from "../components/Messages";
 
 export const UserAdmin = () => {
 
@@ -82,48 +84,50 @@ export const UserAdmin = () => {
 
     // @ts-ignore
     return(
-        <Container className="m-3 p-3 w-50">
-            <Select
-                options={userList}
-                onChange={handleChange}
-            />
-            <Table key="userTable" striped >
-                <thead>
-                <tr>
-                    <td>Name</td>
-                    <td> </td>
-                    <td> </td>
-                </tr>
-                </thead>
-                <tbody>
-                {userInfo?.map( user => {
-                    return(
-                        <tr>
-                            <td>{user.firstName + ' ' + user.lastName}</td>
-                            <td><EditUserModal
-                                id={user.id}
-                                firstName={user.firstName}
-                                lastName={user.lastName}
-                                email={user.email}
-                                role={user.role}
-                                getUserInfo={getUserInfo}
-                            /> </td>
-                            <td><Button id={user.id.toString()} onClick={handleDelete}>Delete</Button> </td>
-                        </tr>
-                    )
-                })}
-                </tbody>
-            </Table>
-            {userInfo && selectedUser ?
-                userInfo.map(user =>
-                    user.id === selectedUser.id ?
-                        <div>
-                            <h3>{user.firstName + ' ' + user.lastName}</h3>
-                            <h4>{"Email: " + user.email}</h4>
-                            <h4>{"API Key: " + user.key}</h4>
-                        </div>:
-                         null) : <h3>Select a user</h3>}
-            <AddUserModal getUserInfo={getUserInfo}/>
+        <Container>
+            <Row>
+                <Col md={6}>
+                    <Container className="shadow rounded-4 m-auto p-3 mt-5 justify-content-center">
+                        <h3 className="justify-content-center m-auto">Users</h3>
+                        <Table key="userTable" striped >
+                            <thead>
+                            <tr>
+                                <td>Role</td>
+                                <td>Name</td>
+                                <td> </td>
+                                <td> </td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {userInfo?.map( user => {
+                                return(
+                                    <tr>
+                                        <td>{user.role}</td>
+                                        <td>{user.firstName + ' ' + user.lastName}</td>
+                                        <td><EditUserModal
+                                            id={user.id}
+                                            firstName={user.firstName}
+                                            lastName={user.lastName}
+                                            email={user.email}
+                                            role={user.role}
+                                            getUserInfo={getUserInfo}
+                                        /> </td>
+                                        <td><Button id={user.id.toString()} onClick={handleDelete}>Delete</Button> </td>
+                                    </tr>
+                                )
+                            })}
+                            </tbody>
+                        </Table>
+
+                        <AddUserModal getUserInfo={getUserInfo}/>
+                    </Container>
+                </Col>
+                <Col md={6} className="justify-content-end">
+                    <Container className="mt-5 p-3 rounded-4 shadow-lg bg-dark text-light">
+                        <h3>something goes here</h3>
+                    </Container>
+                </Col>
+            </Row>
         </Container>
     );
 }
