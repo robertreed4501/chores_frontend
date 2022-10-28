@@ -8,7 +8,23 @@ import {AuthContext} from "../context/AuthProvider";
 import {AdminContext} from "../context/AdminProvider";
 import {useNavigate} from "react-router-dom";
 
-export const AddUserModal = () => {
+type UserInfo = [{
+    id: number
+    firstName: string
+    lastName: string
+    email: string
+    role: string
+    key: string
+    groupId: number
+}]
+
+type userAdminProps = {
+    getUserInfo: () =>void;
+}
+
+export const AddUserModal = ({getUserInfo}: userAdminProps) => {
+
+
 
     type DashCard = [[{
         userId: any
@@ -36,6 +52,7 @@ export const AddUserModal = () => {
     const [auth, setAuth] = useContext(AuthContext);
     // @ts-ignore
     const [dashboard, setDashboard] = useContext<DashCard>(AdminContext);
+    // @ts-ignore
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -52,8 +69,9 @@ export const AddUserModal = () => {
 
         setValidated(true);
         addUser().then(() => {
-            handleClose();
+            return null;
         });
+        handleClose();
 
     };
 
@@ -65,8 +83,8 @@ export const AddUserModal = () => {
                 withCredentials: false
             }
         );
-
-        alert(response.data);
+        // @ts-ignore
+        response.data === "user saved" ? getUserInfo() : alert(response.data);
     }
 
     return (
