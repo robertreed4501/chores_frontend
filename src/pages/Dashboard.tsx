@@ -46,6 +46,7 @@ export const Dashboard = () => {
     const [auth, setAuth] = useContext(AuthContext);
     // @ts-ignore
     const [dashboard, setDashboard] = useContext(AdminContext);
+    const [responseReceived, setResponseReceived] = useState(false);
 
     console.log(auth.id + "from dashboard after loading useContext(AuthContext)");
 
@@ -67,6 +68,7 @@ export const Dashboard = () => {
                 setData(response.data)
                 console.log("setting data - dashboard.tsx getResponse()")
                 setDashboard(response.data)
+                setResponseReceived(true);
             }
         ).catch((error) => console.log(error));
     }
@@ -96,8 +98,14 @@ export const Dashboard = () => {
     }
 
     console.log(data);
+
+    if (responseReceived && data?.at(0) === undefined) {
+        return <div className="m-3 container-fluid col-6 justify-content-center"><h3>No Chores Assigned Yet</h3></div>
+    }else
     // @ts-ignore
     return (
+
+
 
         <Container><Row>{data?.map(user => (
             <Col md="auto" key={user.userId}>
