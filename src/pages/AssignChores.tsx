@@ -4,7 +4,7 @@ import {AuthContext} from "../context/AuthProvider";
 import axios from "../api/axios";
 import Cookies from "js-cookie";
 import Select from "react-select";
-import {Button, Container, Table} from "react-bootstrap";
+import {Button, Col, Container, Form, Row, Table} from "react-bootstrap";
 import {render} from "react-dom";
 import {AdminContext} from "../context/AdminProvider";
 import {Link, useNavigate} from "react-router-dom";
@@ -30,7 +30,7 @@ export const AssignChores = () => {
 
     type UserType = {
         id: number
-        firstName: string
+        name: string
     }
 
     type ChoreListType = [{
@@ -119,7 +119,7 @@ export const AssignChores = () => {
 
     let selectUserList: selectedUserList = [{value: 0, label: ""}];
     userList?.forEach(user => {
-        selectUserList.push({value:user.id, label:user.firstName});
+        selectUserList.push({value:user.id, label:user.firstName + " " + user.lastName});
     })
 
     console.log(selectUserList?.at(0)?.label + " userList from AssignChores")
@@ -147,6 +147,7 @@ export const AssignChores = () => {
             let currIndex = selectedChores.indexOf(parseInt(event.target.id));
             setSelectedChores((products) => products.filter((_, index) => index !== currIndex));
         }
+        console.log(selectedChores)
 
     }
 
@@ -194,6 +195,25 @@ export const AssignChores = () => {
         await getChoreList(auth.groupId);
     }
 
+    const handleUnassignChores = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        const response = await axios.delete("/api/assignments/delete/" + selectedUser?.id);
+        alert(response.data)
+        await getResponse();
+    }
+
+
+    const getResponse = async () => {
+        const response = await axios.get('/api/dashboard', {withCredentials: false, headers:{'key': auth.key}});
+
+
+                console.log("setting data - dashboard.tsx getResponse()");
+                // @ts-ignore
+        setDashboard(response.data);
+
+
+
+    }
+
     let navigate = useNavigate();
     const handleClick = () => {
         navigate("/useradmin", {replace: false})
@@ -201,100 +221,139 @@ export const AssignChores = () => {
 
     return (
         <>
+            <Container className="m-3 p-3 border-light border-2 rounded-4 shadow">
+                <Row className="my-auto">
+                    <h1>Assign Chores</h1>
+                </Row>
+            </Container>
+            <Container>
+                <Row>
+                    <Col md={6}>
+                        <Container className="m-3 p-3 border-2 rounded-4 shadow">
+                            <Row className="mb-2">
+                                <Col md={"auto"}>
+                                    <h4>Search Chores:</h4>
+                                </Col>
+                                <Col md={"auto"}>
+                                    <input type={"text"} onChange={handleSearch}/>
+                                </Col>
 
-            <Select
-                options={selectUserList}
-                onChange={handleChange}
-            />
-            <input type={"text"} onChange={handleSearch}/>
-            <div className="tableContainer">
-            <Table striped variant="sm">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Chore Name</th>
-                        <th>Level</th>
-                        <th>Scope</th>
-                        <th> </th>
-                    </tr>
-                </thead>
-                <tbody>
 
-                {choreList?.map(chore =>{
-                    if (searchText === ''){
-                        return(
-                            <tr key={chore.id}>
-                                <td><input
-                                    key={chore.id}
-                                    id={chore.id.toString()}
-                                    type={"checkbox"}
-                                    onChange={handleCheck}
-                                    checked={selectedChores.includes(chore.id)}
-                                /></td>
-                                <td>{chore.name}</td>
-                                <td>{chore.choreLevel.toLowerCase()}</td>
-                                <td>{chore.scope.toLowerCase()}</td>
-                                <td><Button variant={"outline-primary"} id={chore.id.toString()} value={"delete"} onClick={handleDeleteChore}>Delete</Button></td>
-                            </tr>)
-                    }
-                    else{
-                        if (chore.name.toLowerCase().includes(searchText.toLowerCase())){
-                            return(
-                                <tr key={chore.id}>
-                                    <td><input
-                                        key={chore.id}
-                                        id={chore.id.toString()}
-                                        type={"checkbox"}
-                                        onChange={handleCheck}
-                                        checked={selectedChores.includes(chore.id)}
-                                    /></td>
-                                    <td>{chore.name}</td>
-                                    <td>{chore.choreLevel.toLowerCase()}</td>
-                                    <td>{chore.scope.toLowerCase()}</td>
-                                    <td><Button variant={"outline-primary"} id={chore.id.toString()} value={"delete"} onClick={handleDeleteChore}>Delete</Button></td>
-                                </tr>)
-                        }
-                    }
-                    ;}
-                )}
+                            </Row>
 
-                </tbody>
-            </Table>
-            </div>
-                <input type={"button"} key={"assignChoresButton"} name={"assignChoresButton"} onClick={handleAssignChores} value={"Add Chores"} className="m-2"/>
-                <Button variant={"outline-primary"} onClick={handleAssignChores} className="m-2">Add Chores</Button>
+                            <div className="tableContainer">
 
-                <AddChoreModal />
-                <Table striped bordered hover responsive variant="sm">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Chore Name</th>
-                            <th>Level</th>
-                            <th>Scope</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {dashboard?.map(user => {
-                        console.log(selectedChores)
-                        if (user.userId === selectedUser?.id) {
-                            return (
-                                user.chores.map(choreArray => {
-                                    return (
-                                        <tr key={choreArray.at(0)?.id}>
-                                            <td>{choreArray.at(0)?.assignmentId}</td>
-                                            <td>{choreArray.at(0)?.name}</td>
-                                            <td>{choreArray.length}</td>
-                                            <td><Button variant={"outline-primary"} id={choreArray.at(0)?.assignmentId} value={"delete"} onClick={handleDelete}>Delete</Button></td>
-                                        </tr>
-                                    )
+                                <Table striped variant="sm" className="table-bordered table-light">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Chore Name</th>
+                                        <th>Times per Week</th>
+                                        <th> </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {choreList?.map((chore, index) =>{
+                                        if (searchText === ''){
+                                            return(
+                                                <tr key={chore.id}>
+                                                    <td>
+                                                        <Form>
+                                                            <Form.Check
+                                                                key={index}
+                                                                id={index.toString()}
+                                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleCheck(e)}
+                                                                checked={chore.selected}
+                                                            />
+                                                        </Form></td>
+                                                    <td>{chore.name}</td>
+                                                    <td>{chore.multiplier.toString()}</td>
+                                                    <td><Button variant={"outline-primary"} id={chore.id.toString()} value={"delete"} onClick={handleDeleteChore}>Delete</Button></td>
+                                                </tr>)
+                                        }
+                                        else{
+                                            if (chore.name.toLowerCase().includes(searchText.toLowerCase())){
+                                                return(
+                                                    <tr key={chore.id}>
+                                                        <td><input
+                                                            key={chore.id}
+                                                            id={chore.id.toString()}
+                                                            type={"checkbox"}
+                                                            onChange={handleCheck}
+                                                            checked={selectedChores.includes(chore.id)}
+                                                        /></td>
+                                                        <td>{chore.name}</td>
+                                                        <td>{chore.multiplier.toString()}</td>
+                                                        <td><Button variant={"outline-primary"} id={chore.id.toString()} value={"delete"} onClick={handleDeleteChore}>Delete</Button></td>
+                                                    </tr>)
+                                            }
+                                        }
+                                        ;}
+                                    )}
+
+                                    </tbody>
+                                </Table>
+
+                            </div>
+                            <AddChoreModal />
+                            <Button variant={"outline-primary"} onClick={handleAssignChores} className="m-2">
+                                Assign Chores to {selectedUser?.name}</Button>
+
+
+                        </Container>
+                    </Col>
+                    <Col  md={6}>
+                        <Container className="m-3 p-3 border-2 rounded-4 shadow border-dark">
+                            <Row>
+                                <Col md={"auto"}>
+                                    <h3>Select User: </h3>
+                                </Col>
+                                <Col md={6}>
+                                    <Select
+                                        options={selectUserList}
+                                        onChange={handleChange}
+                                    />
+                                </Col>
+                            </Row>
+                            <div className="tableContainer">
+                            <Table striped bordered hover responsive variant="sm" className="table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Chore Name</th>
+                                    <th>Times per Week</th>
+                                    <th> </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {dashboard?.map(user => {
+                                    console.log(selectedChores)
+                                    if (user.userId === selectedUser?.id) {
+                                        return (
+                                            user.chores.map(choreArray => {
+                                                return (
+                                                    <tr key={choreArray.at(0)?.id}>
+                                                        <td>{choreArray.at(0)?.name}</td>
+                                                        <td>{choreArray.length}</td>
+                                                        <td><Button variant={"outline-primary"} id={choreArray.at(0)?.assignmentId} value={"delete"} onClick={handleDelete}>Delete</Button></td>
+                                                    </tr>
+                                                )
+                                            })
+                                        );
+                                    }
                                 })
-                            );
-                        }
-                    })
-                    }
-                    </tbody>
-                </Table>
+                                }
+                                </tbody>
+                            </Table>
+                            </div>
+                            <Button variant={"outline-primary"} onClick={handleUnassignChores} className="m-2">Clear All Assignments</Button>
+                        </Container>
+                    </Col>
+                </Row>
+            </Container>
+
+
+
                 <Link to={"/useradmin"}>to user admin</Link>
 
         </>
