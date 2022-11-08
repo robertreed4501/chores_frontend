@@ -63,7 +63,17 @@ export const EditUserModal = (props: EditUserProps) => {
     // @ts-ignore
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleShow = () => {
+        setShow(true);
+        resetFields();
+    }
+
+    const resetFields = () => {
+        setFirstName(props.firstName);
+        setLastName(props.lastName);
+        setEmail(props.email);
+        setRole(props.role);
+    }
 
     const navigate = useNavigate();
 
