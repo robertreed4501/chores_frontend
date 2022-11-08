@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import {AuthContext} from "../context/AuthProvider";
 import Cookies from "js-cookie";
 import {useNavigate} from "react-router-dom";
@@ -63,7 +63,7 @@ export const Dashboard = () => {
     // @ts-ignore
     const getResponse = async () => {
         // @ts-ignore
-        await axios.get('http://10.0.0.18:8080/api/dashboard', {withCredentials: false, headers:{'key': key}}).then(
+        await axios.get('/api/dashboard', {withCredentials: false, headers:{'key': auth.key}}).then(
             (response) => {
                 setData(response.data)
                 console.log("setting data - dashboard.tsx getResponse()")
@@ -103,15 +103,16 @@ export const Dashboard = () => {
         return <div className="m-3 container-fluid col-6 justify-content-center"><h3>No Chores Assigned Yet</h3></div>
     }else
     // @ts-ignore
-    return (
+    return (<Container className="pt-5 px-0">
 
 
+        <Container className="mb-5 p-3 rounded-4 shadow"><h3>Dashboard</h3></Container>
 
-        <Container><Row>{data?.map(user => (
-            <Col md="auto" key={user.userId}>
+        <Container className=" p-3 rounded-4 shadow overflow-scroll" style={{height: "69vh"}}><Row>{data?.map(user => (
+            <Col md={"auto"} key={user.userId}>
                 <div key={user.userId} className="Card">
                     <>
-                        <h2 key={user.userId}>{user.name}'s chores</h2>
+                        <h4 key={user.userId}>{user.name}'s chores</h4>
 
                         <Table className="table-sm">
                             <thead>
@@ -139,9 +140,8 @@ export const Dashboard = () => {
                 </div>
             </Col>
         ))}</Row>
-            <input type={"button"} onClick={handleClick} value="click for assignchores"/>
-
         </Container>
+</Container>
     )
 }
 
