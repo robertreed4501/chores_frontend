@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import './App.css';
 import './index.css';
 import {Link, Navigate, Route, Routes, useNavigate} from "react-router-dom";
@@ -17,6 +17,8 @@ import {UserAdmin} from "./pages/UserAdmin";
 import Cookies from "js-cookie";
 import {AuthContext} from "./context/AuthProvider";
 import {LoginModal} from "./components/LoginModal";
+import PanelFooter from "react-bootstrap/lib/PanelFooter";
+import axios from "axios";
 
 
 
@@ -24,23 +26,36 @@ import {LoginModal} from "./components/LoginModal";
 function App() {
 // @ts-ignore
     const [auth, setAuth] = useContext(AuthContext);
+    const [expanded, setExpanded] = useState(false);
     const navigate = useNavigate();
+
+
 
     const handleLogout = () => {
         Cookies.remove('key');
+        setExpanded(false);
         setAuth({});
         navigate("/");
     }
 
     const handleRegister = () => {
+        setExpanded(false);
         navigate("/register");
     }
 
+    const collapseNavbar = () => {
+        setExpanded(false);
+    }
+
+    const toggleNavbar = () => {
+        setExpanded(!expanded);
+    }
+
     const createNavbar = () => {
-        if (!auth.id){
+        if (auth === undefined || !auth.id){
             return(
             <><Nav className="me-auto">
-                <Nav.Link as={Link} to="/about">About</Nav.Link>
+                <Nav.Link as={Link} to="/about" onClick={collapseNavbar}>About</Nav.Link>
             </Nav>
                 <Nav>
                 <Button className="btn btn-primary m-2" onClick={handleRegister}>Register</Button>
@@ -50,9 +65,9 @@ function App() {
         }else if (auth.role === 'USER'){
             return(
             <><Nav className="me-auto">
-                <Nav.Link as={Link} to="/user">My Chores</Nav.Link>
-                <Nav.Link as={Link} to="/messages">Messages</Nav.Link>
-                <Nav.Link as={Link} to="/help">Help</Nav.Link>
+                <Nav.Link as={Link} to="/user" onClick={collapseNavbar}>My Chores</Nav.Link>
+                <Nav.Link as={Link} to="/messages" onClick={collapseNavbar}>Messages</Nav.Link>
+                <Nav.Link as={Link} to="/help" onClick={collapseNavbar}>Help</Nav.Link>
 
             </Nav>
                 <Nav>
@@ -63,9 +78,9 @@ function App() {
             <><Nav className="me-auto">
 
 
-                <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
-                <Nav.Link as={Link} to="/useradmin">Users</Nav.Link>
-                <Nav.Link as={Link} to="/assignchores">Assign Chores</Nav.Link>
+                <Nav.Link as={Link} to="/dashboard" onClick={collapseNavbar}>Dashboard</Nav.Link>
+                <Nav.Link as={Link} to="/useradmin" onClick={collapseNavbar}>Users</Nav.Link>
+                <Nav.Link as={Link} to="/assignchores" onClick={collapseNavbar}>Assign Chores</Nav.Link>
 
             </Nav><Nav>
                 <Button className="btn btn-primary" onClick={handleLogout}>Logout</Button>
@@ -73,9 +88,16 @@ function App() {
         }
     }
 
+
+
   // @ts-ignore
     return (
-        <>
+        <div style={{backgroundColor: "#54bdea",
+            width: "100vw",
+            height: "100vh",
+            paddingTop: "2em",
+            marginBottom: "2em"
+            }}>
             <link
                 rel="stylesheet"
                 href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
@@ -83,10 +105,10 @@ function App() {
                 crossOrigin="anonymous"
             />
 
-            <Navbar bg="dark" expand="lg" className="bg-dark navbar-dark ">
+            <Navbar bg="dark" expand="lg" className="bg-dark navbar-dark fixed-top" expanded={expanded}>
                 <Container className="rounded shadow-lg">
-                    <Navbar.Brand as={Link} to="/">ChoresGalore</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Brand as={Link} to="/" onClick={collapseNavbar}>ChoresGalore</Navbar.Brand>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={toggleNavbar}/>
                     <Navbar.Collapse id="basic-navbar-nav">
                         {createNavbar()}
 
@@ -95,9 +117,9 @@ function App() {
                 </Container>
             </Navbar>
 
-            <Container className="align-items-center align-self-center mx-auto">
+            <Container className="align-items-center align-self-center w-75 h-100" style={{backgroundColor: "#f2f2f5"}}>
                 <Routes>
-                    <Route element={<PrivateRoutes/>}>
+                    <Route element={<PrivateRoutes/>} >
 
                         <Route path="/test" element={<OtherTest />} />
 
@@ -112,9 +134,9 @@ function App() {
                     <Route path="/" element={<TestElement/>} />
                     <Route path="/login" element={<Login />} />
                 </Routes>
-                <p>Hello?</p>
             </Container>
-        </>
+        <footer className="bg-dark text-light align-items-center fixed-bottom"><h3 className="mx-auto">footer</h3></footer>
+        </div>
     );
 }
 
