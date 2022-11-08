@@ -9,6 +9,7 @@ import {render} from "react-dom";
 import {AdminContext} from "../context/AdminProvider";
 import {Link, useNavigate} from "react-router-dom";
 import {AddChoreModal} from "../components/AddChoreModal";
+import {EditChoreModal} from "../components/EditChoreModal";
 
 
 export const AssignChores = () => {
@@ -37,9 +38,10 @@ export const AssignChores = () => {
         id: number
         name: string
         choreLevel: "EASY" | "MEDIUM" | "HARD"
-        multiplier: Number
+        multiplier: number
         scope: "PERSONAL" | "GROUP"
         selected: boolean
+        description: string
     }]
 
     type dashCard = [[{
@@ -59,10 +61,13 @@ export const AssignChores = () => {
 
     const [userList, setUserList] = useState<UserListType>();
     const [selectedUser, setSelectedUser] = useState<UserType>();
-    const [choreList, setChoreList] = useState<ChoreListType>([{id: 0, name:"", choreLevel:"EASY", multiplier: 1, scope:"PERSONAL", selected: false}]);
+    const [choreList, setChoreList] = useState<ChoreListType>([{id: 0, name:"", choreLevel:"EASY", multiplier: 1, scope:"PERSONAL", selected: false, description:''}]);
     const [assignedChoresList, setAssignedChoresList] = useState<ChoreListType>();
     const [searchText, setSearchText] = useState<string>('');
     const [selectedChores, setSelectedChores] = useState<number[]>([]);
+    const [rerender, setRerender] = useState(false);
+
+
     const key = Cookies.get('key');
 
     // @ts-ignore
@@ -110,9 +115,9 @@ export const AssignChores = () => {
         getChoreList(auth.groupId).then(() => null);
     },[])
 
-    useEffect(() => {
+   /* useEffect(() => {
         getChoreList(auth.groupId).then(r => null);
-    }, [dashboard])
+    }, [dashboard])*/
     //value=user.id ,
 
 
@@ -132,23 +137,35 @@ export const AssignChores = () => {
 
     // @ts-ignore
     const handleChange = (selectedOption) => {
-        setSelectedUser({id: selectedOption.value, firstName: selectedOption.label});
+        setSelectedUser({id: selectedOption.value, name: selectedOption.label});
         //
     }
 
+    //TODO change handleCheck method to run forEach through tempList and insert correct boolean value
     const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
-        let tempList: number[];
-        tempList = selectedChores;
+        let tempSelectedChores: number[];
+        tempSelectedChores = selectedChores;
+        let tempChoreList = choreList;
+        const id = parseInt(event.target.id)
         if (event.target.checked) {
-            tempList.push(parseInt(event.target.id));
-            setSelectedChores(tempList);
+            tempSelectedChores.push(parseInt(event.target.id));
+            setSelectedChores(tempSelectedChores);
+            tempChoreList.forEach( chore => {
+                chore.id === id ? chore.selected = true : chore.selected = chore.selected;
+
+            })
+            setChoreList(tempChoreList);
         }
-        else if (!event.target.checked){
+        else /*if (!event.target.checked)*/{
             let currIndex = selectedChores.indexOf(parseInt(event.target.id));
             setSelectedChores((products) => products.filter((_, index) => index !== currIndex));
+            tempChoreList.forEach( chore => {
+                chore.id === id ? chore.selected = false : chore.selected = chore.selected;
+            })
+            setChoreList(tempChoreList);
         }
-        console.log(selectedChores)
-
+        console.log(selectedChores);
+        setRerender(!rerender);
     }
 
     const handleAssignChores = async () => {
@@ -157,6 +174,9 @@ export const AssignChores = () => {
             alert("select a user")
             return null;
         }
+
+
+
         const response = await axios.post(
             'api/assignments/add',
             JSON.stringify({userId: selectedUser.id, groupId: auth.groupId, choreId: selectedChores}),
@@ -168,6 +188,11 @@ export const AssignChores = () => {
         // @ts-ignore
         setDashboard(response.data);
         setSelectedChores([]);
+        let tempChoreList = choreList;
+        tempChoreList.forEach( chore => {
+            chore.selected = false;
+        })
+
 
 
 
@@ -219,17 +244,21 @@ export const AssignChores = () => {
         navigate("/useradmin", {replace: false})
     }
 
+    const setNewChoreList = (choreList: ChoreListType) : void=> {
+        setChoreList(choreList);
+    }
+
     return (
-        <>
-            <Container className="m-3 p-3 border-light border-2 rounded-4 shadow">
+        <Container className="pt-5 bg-body">
+            <Container className="p-3 border-light border-2 rounded-4 shadow">
                 <Row className="my-auto">
-                    <h1>Assign Chores</h1>
+                    <h3>Assign Chores</h3>
                 </Row>
             </Container>
             <Container>
                 <Row>
                     <Col md={6}>
-                        <Container className="m-3 p-3 border-2 rounded-4 shadow">
+                        <Container className="mt-3 p-3 border-2 rounded-4 shadow">
                             <Row className="mb-2">
                                 <Col md={"auto"}>
                                     <h4>Search Chores:</h4>
@@ -244,7 +273,7 @@ export const AssignChores = () => {
                             <div className="tableContainer">
 
                                 <Table striped variant="sm" className="table-bordered table-light">
-                                    <thead>
+                                    <thead className="tableHeadPersistent">
                                     <tr>
                                         <th>#</th>
                                         <th>Chore Name</th>
@@ -262,14 +291,18 @@ export const AssignChores = () => {
                                                         <Form>
                                                             <Form.Check
                                                                 key={index}
-                                                                id={index.toString()}
+                                                                id={chore.id.toString()}
                                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleCheck(e)}
                                                                 checked={chore.selected}
+
                                                             />
                                                         </Form></td>
                                                     <td>{chore.name}</td>
                                                     <td>{chore.multiplier.toString()}</td>
-                                                    <td><Button variant={"outline-primary"} id={chore.id.toString()} value={"delete"} onClick={handleDeleteChore}>Delete</Button></td>
+                                                    <td>
+                                                        <EditChoreModal id={chore.id} name={chore.name} multiplier={chore.multiplier} description={chore.description} setNewChoreList={setNewChoreList}/>
+                                                        <Button variant={"outline-primary"} id={chore.id.toString()} value={"delete"} onClick={handleDeleteChore}>Delete</Button>
+                                                    </td>
                                                 </tr>)
                                         }
                                         else{
@@ -313,12 +346,13 @@ export const AssignChores = () => {
                                     <Select
                                         options={selectUserList}
                                         onChange={handleChange}
+                                        defaultMenuIsOpen={true}
                                     />
                                 </Col>
                             </Row>
                             <div className="tableContainer">
-                            <Table striped bordered hover responsive variant="sm" className="table-bordered">
-                                <thead>
+                            <Table striped variant="sm" className="table-bordered table-light">
+                                <thead className="tableHeadPersistent">
                                 <tr>
                                     <th>Chore Name</th>
                                     <th>Times per Week</th>
@@ -356,6 +390,6 @@ export const AssignChores = () => {
 
                 <Link to={"/useradmin"}>to user admin</Link>
 
-        </>
+        </Container>
     )
 }
