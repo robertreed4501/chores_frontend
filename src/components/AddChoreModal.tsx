@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from "react-bootstrap/Form";
-import {FloatingLabel, FormLabel} from "react-bootstrap";
+import {FloatingLabel, FormLabel, InputGroup} from "react-bootstrap";
 import axios from "../api/axios";
 import {AuthContext} from "../context/AuthProvider";
 import {AdminContext} from "../context/AdminProvider";
@@ -27,6 +27,7 @@ export const AddChoreModal = () => {
     const [show, setShow] = useState(false);
     const [choreName, setChoreName] = useState('');
     const [description, setDescription] = useState('');
+    const [multiplier, setMultiplier] = useState(1);
 
     // @ts-ignore
     const [auth, setAuth] = useContext(AuthContext);
@@ -65,28 +66,37 @@ export const AddChoreModal = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Chore Name: </Form.Label>
 
-                        <>
-                            <FormLabel
-                                controlId="choreNameText"
-                                label="Chore Name"
-                                className="mb-3"
-                            >
                                 <Form.Control
-                                    as="textarea"
+                                    type="text"
                                     placeholder="Enter New Chore"
+                                    value={choreName}
                                     onChange={e => setChoreName(e.target.value)}
+                                    className=""
                                 />
-                            </FormLabel>
-                            <FloatingLabel controlId="floatingTextarea2" label="Description">
-                                <Form.Control
+                            </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Description: </Form.Label>
+                            <Form.Control
                                     as="textarea"
                                     placeholder="Leave a comment here"
-                                    style={{ height: '100px' }}
+                                    className=""
                                     onChange={e => setDescription(e.target.value)}
-                                />
-                            </FloatingLabel>
-                        </>
+                            />
+                        </Form.Group>
+                        <Form.Label>Times per Week</Form.Label>
+                        <InputGroup size="lg" className="w-50 m-3">
+
+                            <Button onClick={() => setMultiplier(multiplier - 1)}>-</Button>
+                            <Form.Control
+                                type="text"
+                                value={multiplier}
+
+                            />
+                            <Button onClick={() => setMultiplier(multiplier + 1)}>+</Button>
+                        </InputGroup>
 
                     </Form>
                 </Modal.Body>
