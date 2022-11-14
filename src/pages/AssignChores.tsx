@@ -66,6 +66,7 @@ export const AssignChores = () => {
     const [searchText, setSearchText] = useState<string>('');
     const [selectedChores, setSelectedChores] = useState<number[]>([]);
     const [rerender, setRerender] = useState(false);
+    const [isDashboardSet, setIsDashboardSet] = useState(false);
 
 
     const key = Cookies.get('key');
@@ -109,11 +110,14 @@ export const AssignChores = () => {
         ).catch((error) => console.log(error));
     }
 
-
     useEffect(() =>{
-        getUserList(auth.id).then(() => null);
-        getChoreList(auth.groupId).then(() => null);
-    },[])
+        if (auth.groupId){
+            getResponse();
+            getUserList(auth.id).then(() => null);
+            getChoreList(auth.groupId).then(() => null);
+        }
+
+    },[auth])
 
    /* useEffect(() => {
         getChoreList(auth.groupId).then(r => null);
@@ -235,7 +239,7 @@ export const AssignChores = () => {
                 // @ts-ignore
         setDashboard(response.data);
 
-
+        setIsDashboardSet(true);
 
     }
 
@@ -246,6 +250,16 @@ export const AssignChores = () => {
 
     const setNewChoreList = (choreList: ChoreListType) : void=> {
         setChoreList(choreList);
+    }
+
+    if (!isDashboardSet){
+        return(
+            <>
+                <h3>
+                    Loading.....
+                </h3>
+            </>
+        )
     }
 
     return (
