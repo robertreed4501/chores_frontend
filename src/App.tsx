@@ -17,8 +17,8 @@ import {UserAdmin} from "./pages/UserAdmin";
 import Cookies from "js-cookie";
 import {AuthContext} from "./context/AuthProvider";
 import {LoginModal} from "./components/LoginModal";
-import PanelFooter from "react-bootstrap/lib/PanelFooter";
-import axios from "axios";
+import axios from "./api/axios";
+
 
 
 
@@ -36,6 +36,7 @@ function App() {
         setExpanded(false);
         setAuth({});
         navigate("/");
+        localStorage.clear();
     }
 
     const handleRegister = () => {
@@ -51,8 +52,29 @@ function App() {
         setExpanded(!expanded);
     }
 
+    const checkAuth = async () => {
+        if (localStorage.getItem('authKey')) {
+            // @ts-ignore
+            const response = await axios.get('/api/user', {withCredentials: false, headers:{'key': localStorage.getItem('authKey').toString()}})
+            setAuth(await response.data.userResponse);
+            console.log(JSON.stringify(auth) + " - checkAuth json(auth)");
+            // @ts-ignore
+            console.log(JSON.stringify(localStorage.getItem('authKey')) + " - checkAuth json(localStorage.getItem)")
+        }
+    }
+
     const createNavbar = () => {
-        if (auth === undefined || !auth.id){
+        if (auth === undefined) {
+            checkAuth();
+            return(
+                <>
+                    <h3>
+                        Loading.....
+                    </h3>
+                </>
+            )
+        }
+        if (!localStorage.getItem('loggedIn')){
             return(
             <><Nav className="me-auto">
                 <Nav.Link as={Link} to="/about" onClick={collapseNavbar}>About</Nav.Link>
@@ -88,6 +110,7 @@ function App() {
         }
     }
 
+    useEffect(() => {checkAuth()}, [])
 
 
   // @ts-ignore
