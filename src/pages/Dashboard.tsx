@@ -6,12 +6,13 @@ import {useNavigate} from "react-router-dom";
 import {Col, Container, Row, Table} from "react-bootstrap";
 import {AdminContext} from "../context/AdminProvider";
 import {log} from "util";
+import {User} from "./User";
 
 type dashCard = [{
     userId: any
     name: String
     chores: [[{
-        done: String
+        done: boolean
         firstName: String
         frequency: String
         groupId: any
@@ -47,13 +48,16 @@ export const Dashboard = () => {
     // @ts-ignore
     const [dashboard, setDashboard] = useContext(AdminContext);
     const [responseReceived, setResponseReceived] = useState(false);
+    const [isFirstRender, setIsFirstRender] = useState(true);
 
-    console.log(auth.id + "from dashboard after loading useContext(AuthContext)");
+    console.log(auth?.id + "from dashboard after loading useContext(AuthContext)");
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        getResponse().then(r => null);
+        /*if (auth !== undefined)*/
+        getResponse().then(r => null)
+
     }, []);
 
 
@@ -62,15 +66,18 @@ export const Dashboard = () => {
 
     // @ts-ignore
     const getResponse = async () => {
-        // @ts-ignore
-        await axios.get('/api/dashboard', {withCredentials: false, headers:{'key': auth.key}}).then(
-            (response) => {
-                setData(response.data)
-                console.log("setting data - dashboard.tsx getResponse()")
-                setDashboard(response.data)
-                setResponseReceived(true);
-            }
-        ).catch((error) => console.log(error));
+
+            // @ts-ignore
+            await axios.get('/api/dashboard', {withCredentials: false, headers:{'key': localStorage.getItem('authKey')}}).then(
+                (response) => {
+                    setData(response.data)
+                    console.log("setting data - dashboard.tsx getResponse()")
+                    setDashboard(response.data)
+                    setResponseReceived(true);
+                }
+            ).catch((error) => console.log(error));
+
+
     }
 
     // @ts-ignore
@@ -98,6 +105,16 @@ export const Dashboard = () => {
     }
 
     console.log(data);
+
+    if (auth === undefined) {
+        return(
+            <>
+                <h3>
+                    Loading.....
+                </h3>
+            </>
+        )
+    }
 
     if (responseReceived && data?.at(0) === undefined) {
         return <div className="m-3 container-fluid col-6 justify-content-center"><h3>No Chores Assigned Yet</h3></div>
@@ -127,7 +144,7 @@ export const Dashboard = () => {
                                     <td><li key={choreList.at(0)?.id}>{choreList.at(0)?.name} </li></td>
                                     <td key={choreList.at(0)?.id} align="right">
                                     {choreList.map(chore =>(
-                                        <input key={chore.assignmentId} type="checkbox" defaultChecked={chore.done === 'true'} onClick={() => handleCheck(chore.assignmentId)}/>
+                                        <input key={chore.assignmentId} type="checkbox" defaultChecked={chore.done} onClick={() => handleCheck(chore.assignmentId)}/>
 
                                     ))}
                                     </td>
@@ -140,6 +157,7 @@ export const Dashboard = () => {
                 </div>
             </Col>
         ))}</Row>
+            <User />
         </Container>
 </Container>
     )
