@@ -61,8 +61,9 @@ export const UserAdmin = () => {
     }
 
     useEffect(() => {
+        if (auth !== undefined)
         getUserInfo();
-    }, [])
+    }, [auth])
 
     useEffect(() => {
         populateUserList();
@@ -83,11 +84,12 @@ export const UserAdmin = () => {
     }
 
     // @ts-ignore
-    return(
+    return(<div className="pt-5 m-auto" >
+        <Container className="shadow rounded-4 p-3"><h3>User Management</h3></Container>
         <Container>
             <Row>
-                <Col md={6}>
-                    <Container className="shadow rounded-4 m-auto p-3 mt-5 justify-content-center">
+                <Col md={8} className="m-auto">
+                    <Container className="shadow rounded-4 m-auto p-3 mt-5 justify-content-center bg-light">
                         <h3 className="justify-content-center m-auto">Users</h3>
                         <Table key="userTable" striped >
                             <thead>
@@ -122,12 +124,8 @@ export const UserAdmin = () => {
                         <AddUserModal getUserInfo={getUserInfo}/>
                     </Container>
                 </Col>
-                <Col md={6} className="justify-content-end">
-                    <Container className="mt-5 p-3 rounded-4 shadow-lg bg-dark text-light">
-                        <h3>something goes here</h3>
-                    </Container>
-                </Col>
+
             </Row>
         </Container>
-    );
+</div>);
 }
