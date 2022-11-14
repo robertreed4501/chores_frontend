@@ -41,7 +41,7 @@ export const AddChoreModal = () => {
         alert(choreName);
         const response = await axios.post(
             "/api/chores",
-            {name: choreName, scope: "personal", userGroupId: auth.groupId},
+            {name: choreName, description: description, multiplier: multiplier, userGroupId: auth.groupId},
             {withCredentials: false, headers:{'key': auth.apiKey}}
         );
         // @ts-ignore
