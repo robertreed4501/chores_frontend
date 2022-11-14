@@ -1,8 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {AuthContext} from "../context/AuthProvider";
 import {useContext} from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import Cookies from "js-cookie";
+import {Messages} from "../components/Messages";
+import {Col, Container, Row} from "react-bootstrap";
+import {UserStats} from "../components/UserStats";
 
 
 
@@ -11,13 +14,14 @@ export const User = () => {
         userId: any
         name: String
         chores: [[{
-            done: String
+            done: boolean
             firstName: String
             frequency: String
             groupId: any
             assignmentId: any
             id: any
             name: String
+            description: string
             userId: any
         }]]
     }
@@ -30,7 +34,7 @@ export const User = () => {
 
     const getResponse = async () => {
         // @ts-ignore
-        await axios.get('http://10.0.0.18:8080/api/dashboard/user?userId=' + auth.id, {withCredentials: false, headers:{'key': key, 'content-type':'application/json'}}).then(
+        await axios.get('/api/dashboard/user?userId=' + auth.id, {withCredentials: false, headers:{'key': key, 'content-type':'application/json'}}).then(
             (response) => {
                 setData(response.data)
                 console.log("setting data - dashboard.tsx getResponse()")
@@ -49,7 +53,7 @@ export const User = () => {
         console.log(id + " - from handleCheck Dashboard.tsx")
 
         // @ts-ignore
-        await axios.post('http://10.0.0.18:8080/api/receipts', {"assignmentId": id, "arb": 1}, {withCredentials: false, headers:{'key': key}}).then(
+        await axios.post('/api/receipts', {"assignmentId": id, "arb": 1}, {withCredentials: false, headers:{'key': key}}).then(
             (response) => {
                 console.log(response.data.message)
                 response.data.message === 'receipt added.' ?
@@ -63,31 +67,35 @@ export const User = () => {
     }
 
     return(
-        <div key={data?.userId} className="Card"><>
-            <h2 key={data?.userId}>{data?.name}'s chores</h2>
-            <table>
-                <thead>
-                <tr>
-                    <th>Chore</th>
-                    <th>Done</th>
-                </tr>
-                </thead>
-                <tbody>
-                {data?.chores.map(choreList => (
-                    <tr key={choreList.at(0)?.id}>
-                        <td><li key={choreList.at(0)?.id}>{choreList.at(0)?.name} </li></td>
-                        <td key={choreList.at(0)?.id} align="right">
-                            {choreList.map(chore =>(
-                                <input key={chore.assignmentId} type="checkbox" defaultChecked={chore.done === 'true'} onClick={() => handleCheck(chore.assignmentId)}/>
+        <Container>
+            <Row>
+                <Col>
+                    <div key={data?.userId} className="col-12 card-body border-dark border-4 rounded-4 shadow p-3 bg-white">
+                        <>
+                        <h2 key={data?.userId}>{data?.name}'s chores</h2>
 
+                            {data?.chores.map(choreList => (
+                                <div className="rounded-4 shadow p-3 mb-3 bg-light">
+                                    <div key={choreList.at(0)?.id}>
+                                        <div><li key={choreList.at(0)?.id}>{choreList.at(0)?.name} </li>{choreList.at(0)?.description}</div>
+                                        <div key={choreList.at(0)?.id} >
+                                            {choreList.map(chore =>(
+                                                <input key={chore.assignmentId} type="checkbox" defaultChecked={chore.done} onClick={() => handleCheck(chore.assignmentId)}/>
+
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                                /*<li key={chore.id}>{chore.name}  -  {chore.done}</li>*/
                             ))}
-                        </td>
-                    </tr>
-                    /*<li key={chore.id}>{chore.name}  -  {chore.done}</li>*/
-                ))}
-                </tbody>
-            </table>
-        </>
-        </div>
+
+                        </>
+                    </div>
+                </Col>
+                <Col>
+                    <UserStats />
+                </Col>
+            </Row>
+        </Container>
     )
 }
