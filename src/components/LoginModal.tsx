@@ -2,17 +2,19 @@ import React, {useContext, useRef, useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from "react-bootstrap/Form";
-import {FloatingLabel, FormLabel} from "react-bootstrap";
 import axios from "../api/axios";
 import {AuthContext} from "../context/AuthProvider";
-import {AdminContext} from "../context/AdminProvider";
 import {useNavigate} from "react-router-dom";
 import Cookies from "js-cookie";
-import bcrypt from "bcryptjs";
+
 
 const LOGIN_URL = '/login';
 
-export const LoginModal = () => {
+type LoginModalProps = {
+    collapseNavbar: () => void;
+}
+
+export const LoginModal = (props: LoginModalProps) => {
 
 
 
@@ -62,6 +64,7 @@ export const LoginModal = () => {
                 setSuccess(true);
                 Cookies.set('key', response.data.userResponse.key, { expires: 7, sameSite: "none"});
                 console.log(Cookies.get('key') + "  - from login.tsx")
+                props.collapseNavbar();
                 response.data.userResponse.role === "USER" ?
                     navigate("/user", {replace: false}) :
                     navigate("/dashboard")
