@@ -67,6 +67,7 @@ export const AssignChores = () => {
     const [selectedChores, setSelectedChores] = useState<number[]>([]);
     const [rerender, setRerender] = useState(false);
     const [isDashboardSet, setIsDashboardSet] = useState(false);
+    const [hideLoadChoresButton, setHideLoadChoresButton] = useState(true);
 
 
     const key = Cookies.get('key');
@@ -98,6 +99,7 @@ export const AssignChores = () => {
                 setChoreList(response.data);
             }
         ).catch((error) => console.log(error));
+        choreList === undefined || choreList.length < 1 ? setHideLoadChoresButton(false) : setHideLoadChoresButton(true);
     }
 
     const getAssignmentsByUser = async (userId: number | undefined) => {
@@ -252,6 +254,12 @@ export const AssignChores = () => {
         setChoreList(choreList);
     }
 
+    const handleLoadSampleChores = async () => {
+        const response = await axios.post("/api/chores/loadsamples/" + auth.groupId);
+        setChoreList(response.data);
+        setHideLoadChoresButton(true);
+    }
+
     if (!isDashboardSet){
         return(
             <>
@@ -263,7 +271,7 @@ export const AssignChores = () => {
     }
 
     return (
-        <Container className="pt-5 bg-body">
+        <Container className="p-3 bg-body mt-4 text-center">
             <Container className="p-3 border-light border-2 rounded-4 shadow">
                 <Row className="my-auto">
                     <h3>Assign Chores</h3>
@@ -272,7 +280,7 @@ export const AssignChores = () => {
             <Container>
                 <Row>
                     <Col md={6}>
-                        <Container className="mt-3 p-3 border-2 rounded-4 shadow">
+                        <Container className="mt-3 p-3 border-2 rounded-4 shadow"><>
                             <Row className="mb-2">
                                 <Col md={"auto"}>
                                     <h4>Search Chores:</h4>
@@ -332,7 +340,8 @@ export const AssignChores = () => {
                                                         /></td>
                                                         <td>{chore.name}</td>
                                                         <td>{chore.multiplier.toString()}</td>
-                                                        <td><Button variant={"outline-primary"} id={chore.id.toString()} value={"delete"} onClick={handleDeleteChore}>Delete</Button></td>
+                                                        <td><EditChoreModal id={chore.id} name={chore.name} multiplier={chore.multiplier} description={chore.description} setNewChoreList={setNewChoreList}/>
+                                                        <Button variant={"outline-primary"} id={chore.id.toString()} value={"delete"} onClick={handleDeleteChore}>Delete</Button></td>
                                                     </tr>)
                                             }
                                         }
@@ -343,11 +352,11 @@ export const AssignChores = () => {
                                 </Table>
 
                             </div>
-                            <AddChoreModal />
+                            <AddChoreModal getChoreList={getChoreList}/>
                             <Button variant={"outline-primary"} onClick={handleAssignChores} className="m-2">
                                 Assign Chores to {selectedUser?.name}</Button>
-
-
+                            <Button variant={"outline-primary"} onClick={handleLoadSampleChores} className="m-2" hidden={hideLoadChoresButton}>Load Sample Chores</Button>
+                        </>
                         </Container>
                     </Col>
                     <Col  md={6}>
