@@ -52,7 +52,12 @@ export const EditChoreModal = (props: editChoreProps) => {
     // @ts-ignore
     const [dashboard, setDashboard] = useContext<DashCard>(AdminContext);
 
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+        setShow(false);
+        setChoreName(props.name);
+        setDescription(props.description);
+        setMultiplier(props.multiplier);
+    }
     const handleShow = () => setShow(true);
 
     const handleUpdateChore = async () => {
@@ -79,7 +84,7 @@ export const EditChoreModal = (props: editChoreProps) => {
                 keyboard={false}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>Create New Chore</Modal.Title>
+                    <Modal.Title>Edit Chore</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
@@ -107,7 +112,7 @@ export const EditChoreModal = (props: editChoreProps) => {
                         <Form.Label>Times per Week</Form.Label>
                         <InputGroup size="lg" className="w-50 m-3">
 
-                            <Button onClick={() => setMultiplier(multiplier - 1)}>-</Button>
+                            <Button onClick={() => multiplier > 1 ? setMultiplier(multiplier - 1) : setMultiplier(1)} >-</Button>
                             <Form.Control
                                 type="text"
                                 value={multiplier}
