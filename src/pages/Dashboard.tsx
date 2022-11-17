@@ -5,8 +5,7 @@ import Cookies from "js-cookie";
 import {useNavigate} from "react-router-dom";
 import {Col, Container, Row, Table} from "react-bootstrap";
 import {AdminContext} from "../context/AdminProvider";
-import {log} from "util";
-import {User} from "./User";
+
 
 type dashCard = [{
     userId: any
@@ -120,44 +119,48 @@ export const Dashboard = () => {
         return <div className="m-3 container-fluid col-6 justify-content-center"><h3>No Chores Assigned Yet</h3></div>
     }else
     // @ts-ignore
-    return (<Container className="pt-5 px-0">
+    return (<Container className="px-0 pt-4 text-center">
 
 
         <Container className="mb-5 p-3 rounded-4 shadow"><h3>Dashboard</h3></Container>
 
-        <Container className=" p-3 rounded-4 shadow overflow-scroll" style={{height: "69vh"}}><Row>{data?.map(user => (
-            <Col md={"auto"} key={user.userId}>
-                <div key={user.userId} className="Card">
-                    <>
-                        <h4 key={user.userId}>{user.name}'s chores</h4>
+        <Container className=" p-3 rounded-4 shadow">
+            <h3>Welcome, {auth.firstName}</h3>
+            <h5>Here's how your group is doing this week</h5>
+            <Row>
+                {data?.map(user => (
+                    <Col md={"auto"} key={user.userId}>
+                        <div key={user.userId} className="Card">
+                            <>
+                                <h4 key={user.userId}>{user.name}'s chores</h4>
 
-                        <Table className="table-sm">
-                            <thead>
-                            <tr>
-                                <th>Chore</th>
-                                <th>Done</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {user.chores.map(choreList => (
-                                <tr key={choreList.at(0)?.id}>
-                                    <td><li key={choreList.at(0)?.id}>{choreList.at(0)?.name} </li></td>
-                                    <td key={choreList.at(0)?.id} align="right">
-                                    {choreList.map(chore =>(
-                                        <input key={chore.assignmentId} type="checkbox" defaultChecked={chore.done} onClick={() => handleCheck(chore.assignmentId)}/>
+                                <Table className="table-sm">
+                                    <thead>
+                                    <tr>
+                                        <th>Chore</th>
+                                        <th>Done</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {user.chores.map(choreList => (
+                                        <tr key={choreList.at(0)?.id}>
+                                            <td><li key={choreList.at(0)?.id}>{choreList.at(0)?.name} </li></td>
+                                            <td key={choreList.at(0)?.id} align="right">
+                                            {choreList.map(chore =>(
+                                                <input key={chore.assignmentId} type="checkbox" defaultChecked={chore.done} onClick={() => handleCheck(chore.assignmentId)}/>
 
+                                            ))}
+                                            </td>
+                                        </tr>
+                                        /*<li key={chore.id}>{chore.name}  -  {chore.done}</li>*/
                                     ))}
-                                    </td>
-                                </tr>
-                                /*<li key={chore.id}>{chore.name}  -  {chore.done}</li>*/
-                            ))}
-                            </tbody>
-                        </Table>
-                    </>
-                </div>
-            </Col>
-        ))}</Row>
-            <User />
+                                    </tbody>
+                                </Table>
+                            </>
+                        </div>
+                    </Col>
+                ))}
+            </Row>
         </Container>
 </Container>
     )
