@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {Container, Table} from "react-bootstrap";
+import {Container, ProgressBar, Table} from "react-bootstrap";
 import {AuthContext} from "../context/AuthProvider";
 import axios from "../api/axios";
 import {AdminContext} from "../context/AdminProvider";
@@ -40,17 +40,14 @@ export const UserStats =  () => {
     )
 
     return(
-        <Container className="rounded-4 shadow mb-3 p-3">
+        <Container className="rounded-4 shadow mb-3 p-3 text-center">
             <h1>Stats</h1>
 
             <Table striped hover>
                 <thead>
                     <tr>
-                        <td>Id</td>
-                        <td>Name</td>
-                        <td>% Done</td>
                         <td>Week of</td>
-
+                        <td>% Done</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,10 +55,8 @@ export const UserStats =  () => {
                     stats.map(stat => {
                         return(
                             <tr>
-                                <td>{stat.userId}</td>
-                                <td>{stat.firstName + " " + stat.lastName}</td>
-                                <td>{stat.percentDone}</td>
-                                <td>{stat.start + " - " + stat.end}</td>
+                                <td>{stat.start}</td>
+                                <td><ProgressBar now={stat.percentDone} label={Math.round(stat.percentDone) + '%'} /> </td>
                             </tr>
                         )
                     })
