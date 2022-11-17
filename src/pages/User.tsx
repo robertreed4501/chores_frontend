@@ -43,8 +43,9 @@ export const User = () => {
     }
 
     useEffect(() => {
+        if (auth.id !== undefined)
         getResponse().then(r => null)
-    }, [])
+    }, [auth])
 
     // @ts-ignore
     const handleCheck = async (id: Number | null) => {
@@ -66,19 +67,30 @@ export const User = () => {
         ).catch()
     }
 
-    return(
+    if (data === undefined) return (
         <Container>
+            <h3>Loading</h3>
+        </Container>
+    )
+    if (data.chores === undefined) return (
+        <Container>
+            <h3>No Chores Assigned Yet</h3>
+        </Container>
+    )
+
+    return(
+        <Container className="rounded-4 shadow p-3 mt-4 text-center">
             <Row>
-                <Col>
+                <Col md={6}>
                     <div key={data?.userId} className="col-12 card-body border-dark border-4 rounded-4 shadow p-3 bg-white">
                         <>
                         <h2 key={data?.userId}>{data?.name}'s chores</h2>
 
                             {data?.chores.map(choreList => (
-                                <div className="rounded-4 shadow p-3 mb-3 bg-light">
+                                <div className="rounded-4 shadow p-3 mb-3 bg-light text-start">
                                     <div key={choreList.at(0)?.id}>
                                         <div><li key={choreList.at(0)?.id}>{choreList.at(0)?.name} </li>{choreList.at(0)?.description}</div>
-                                        <div key={choreList.at(0)?.id} >
+                                        <div key={choreList.at(0)?.id} className="text-end">
                                             {choreList.map(chore =>(
                                                 <input key={chore.assignmentId} type="checkbox" defaultChecked={chore.done} onClick={() => handleCheck(chore.assignmentId)}/>
 
@@ -92,7 +104,7 @@ export const User = () => {
                         </>
                     </div>
                 </Col>
-                <Col>
+                <Col md={6}>
                     <UserStats />
                 </Col>
             </Row>
