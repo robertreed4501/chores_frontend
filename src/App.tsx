@@ -18,6 +18,9 @@ import Cookies from "js-cookie";
 import {AuthContext} from "./context/AuthProvider";
 import {LoginModal} from "./components/LoginModal";
 import axios from "./api/axios";
+import {GroupStats} from "./components/GroupStats";
+
+
 
 
 
@@ -56,6 +59,10 @@ function App() {
         if (localStorage.getItem('authKey')) {
             // @ts-ignore
             const response = await axios.get('/api/user', {withCredentials: false, headers:{'key': localStorage.getItem('authKey').toString()}})
+            if (response.data.error){
+                alert(response.data.error)
+                localStorage.clear();
+            }
             setAuth(await response.data.userResponse);
             console.log(JSON.stringify(auth) + " - checkAuth json(auth)");
             // @ts-ignore
@@ -82,7 +89,7 @@ function App() {
                 <Nav>
                 <Button className="btn btn-primary m-2" onClick={handleRegister}>Register</Button>
 
-                <LoginModal />
+                <LoginModal collapseNavbar={collapseNavbar}/>
             </Nav></>)
         }else if (auth.role === 'USER'){
             return(
@@ -101,8 +108,11 @@ function App() {
 
 
                 <Nav.Link as={Link} to="/dashboard" onClick={collapseNavbar}>Dashboard</Nav.Link>
+                <Nav.Link as={Link} to="/user" onClick={collapseNavbar}>My Chores</Nav.Link>
                 <Nav.Link as={Link} to="/useradmin" onClick={collapseNavbar}>Users</Nav.Link>
                 <Nav.Link as={Link} to="/assignchores" onClick={collapseNavbar}>Assign Chores</Nav.Link>
+                <Nav.Link as={Link} to="/stats" onClick={collapseNavbar}>Stats</Nav.Link>
+
 
             </Nav><Nav>
                 <Button className="btn btn-primary" onClick={handleLogout}>Logout</Button>
@@ -117,8 +127,8 @@ function App() {
     return (
         <div style={{backgroundColor: "#54bdea",
             width: "100vw",
-            height: "100vh",
-            paddingTop: "2em",
+            height: "96vh",
+            paddingTop: "3.4em",
             marginBottom: "2em"
             }}>
             <link
@@ -140,14 +150,14 @@ function App() {
                 </Container>
             </Navbar>
 
-            <Container className="align-items-center align-self-center w-75 h-100" style={{backgroundColor: "#f2f2f5"}}>
+            <Container className="align-items-center align-self-center w-xs-100 w-lg-75 h-100 overflow-scroll pt-4 pb-2" style={{backgroundColor: "#f2f2f5"}}>
                 <Routes>
                     <Route element={<PrivateRoutes/>} >
 
                         <Route path="/test" element={<OtherTest />} />
 
                         <Route path="/user" element={<UserPage />} />
-
+                        <Route path="/stats" element={<GroupStats />} />
 
                         <Route path="/useradmin" element={<UserAdmin />} />
                         <Route path="/dashboard" element={<Dashboard />} />
