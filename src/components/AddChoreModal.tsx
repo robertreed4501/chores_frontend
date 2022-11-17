@@ -7,7 +7,12 @@ import axios from "../api/axios";
 import {AuthContext} from "../context/AuthProvider";
 import {AdminContext} from "../context/AdminProvider";
 
-export const AddChoreModal = () => {
+type AddChoreModalProps = {
+    getChoreList: (groupId: number | undefined) => void;
+}
+
+
+export const AddChoreModal = (props: AddChoreModalProps) => {
 
     type DashCard = [[{
         userId: any
@@ -47,6 +52,7 @@ export const AddChoreModal = () => {
         // @ts-ignore
         setDashboard(response.data);
         setShow(false);
+        props.getChoreList(auth.groupId);
     }
 
     return (
