@@ -84,7 +84,7 @@ export const UserAdmin = () => {
     }
 
     // @ts-ignore
-    return(<div className="pt-5 m-auto" >
+    return(<div className="mt-4 m-auto text-center" >
         <Container className="shadow rounded-4 p-3"><h3>User Management</h3></Container>
         <Container>
             <Row>
