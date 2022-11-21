@@ -1,10 +1,11 @@
 import React, {useContext, useEffect, useState} from "react";
 import axios from "../api/axios";
 import {AuthContext} from "../context/AuthProvider";
-import Cookies from "js-cookie";
 import {useNavigate} from "react-router-dom";
 import {Col, Container, Row, Table} from "react-bootstrap";
 import {AdminContext} from "../context/AdminProvider";
+import green_check from "../images/green_check.png"
+import underscore from "../images/underscore.png"
 
 
 type dashCard = [{
@@ -59,22 +60,25 @@ export const Dashboard = () => {
 
     }, []);
 
-
-
-    const key = Cookies.get('key');
-
     // @ts-ignore
     const getResponse = async () => {
-
+        if (localStorage.getItem('authKey')){
             // @ts-ignore
-            await axios.get('/api/dashboard', {withCredentials: false, headers:{'key': localStorage.getItem('authKey')}}).then(
-                (response) => {
-                    setData(response.data)
-                    console.log("setting data - dashboard.tsx getResponse()")
-                    setDashboard(response.data)
-                    setResponseReceived(true);
-                }
-            ).catch((error) => console.log(error));
+            const key: string = localStorage.getItem('authKey').toString();
+            // @ts-ignore
+            await axios.get('/api/dashboard',
+                {withCredentials: false, headers:{'key': key}})
+                .then(
+                    (response) => {
+                        setData(response.data)
+                        console.log("setting data - dashboard.tsx getResponse()")
+                        setDashboard(response.data)
+                        setResponseReceived(true);
+                    }
+                ).catch((error) => console.log(error));
+        }
+
+
 
 
     }
@@ -86,7 +90,9 @@ export const Dashboard = () => {
         console.log(id + " - from handleCheck Dashboard.tsx")
 
         // @ts-ignore
-        await axios.post('http://10.0.0.18:8080/api/receipts', {"assignmentId": id, "arb": 1}, {withCredentials: false, headers:{'key': key}}).then(
+        await axios.post('http://10.0.0.18:8080/api/receipts',
+            {"assignmentId": id, "arb": 1}, {withCredentials: false, headers:{'key': auth.apiKey}})
+            .then(
             (response) => {
                 console.log(response.data.message)
                 response.data.message === 'receipt added.' ?
@@ -144,11 +150,17 @@ export const Dashboard = () => {
                                     <tbody>
                                     {user.chores.map(choreList => (
                                         <tr key={choreList.at(0)?.id}>
-                                            <td><li key={choreList.at(0)?.id}>{choreList.at(0)?.name} </li></td>
+                                            <td className="text-start">
+                                                <li key={choreList.at(0)?.id}>{choreList.at(0)?.name} </li>
+                                            </td>
                                             <td key={choreList.at(0)?.id} align="right">
                                             {choreList.map(chore =>(
-                                                <input key={chore.assignmentId} type="checkbox" defaultChecked={chore.done} onClick={() => handleCheck(chore.assignmentId)}/>
-
+                                                <img
+                                                    src={chore.done ? green_check : underscore}
+                                                    width={25}
+                                                    height={25}
+                                                    alt={chore.done ? "Done" : "Not done"}
+                                                />
                                             ))}
                                             </td>
                                         </tr>
@@ -165,4 +177,3 @@ export const Dashboard = () => {
 </Container>
     )
 }
-

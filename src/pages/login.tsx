@@ -91,36 +91,6 @@ export const Login = () => {
                 </Button>
             </Form>
         </Container>
-    /*<section>
-        {success ? <Navigate to="user" /> : null}
 
-        <p ref={errRef} className={err ? "errorMsg" : "offscreen"} aria-live="assertive">{err}</p>
-        <h1>Sign In</h1>
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="username">Username:</label>
-            <input
-                type="text"
-                id="username"
-                ref={userRef}
-                autoComplete="off"
-                onChange={(e) => setUser(e.target.value)}
-                value={user}
-                required
-            />
-            <label htmlFor="password">Password:</label>
-            <input
-                type="password"
-                id="password"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                required
-            />
-            <button>Sign In</button>
-        </form>
-        <p>
-            <Link to="/register">Need an Account?</Link><br />
-
-        </p>
-    </section>*/
 );
 }

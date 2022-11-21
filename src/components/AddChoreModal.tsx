@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from "react-bootstrap/Form";
-import {FloatingLabel, FormLabel, InputGroup} from "react-bootstrap";
+import {InputGroup} from "react-bootstrap";
 import axios from "../api/axios";
 import {AuthContext} from "../context/AuthProvider";
 import {AdminContext} from "../context/AdminProvider";
@@ -43,7 +43,6 @@ export const AddChoreModal = (props: AddChoreModalProps) => {
     const handleShow = () => setShow(true);
 
     const handleAddChore = async () => {
-        alert(choreName);
         const response = await axios.post(
             "/api/chores",
             {name: choreName, description: description, multiplier: multiplier, userGroupId: auth.groupId},

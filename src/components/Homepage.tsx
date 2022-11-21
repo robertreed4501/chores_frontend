@@ -4,7 +4,7 @@ import kidsCleaning from "../images/kidscleaning.jpg"
 import {LoginModal} from "./LoginModal";
 import {useNavigate} from "react-router-dom";
 
-function TestElement() {
+function Homepage() {
 
     const navigate = useNavigate();
 
@@ -31,4 +31,4 @@ function TestElement() {
 )
 }
 
-export default TestElement
+export default Homepage

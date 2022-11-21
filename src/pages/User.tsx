@@ -3,8 +3,8 @@ import {AuthContext} from "../context/AuthProvider";
 import {useContext} from "react";
 import axios from "../api/axios";
 import Cookies from "js-cookie";
-import {Messages} from "../components/Messages";
 import {Col, Container, Row} from "react-bootstrap";
+import green_check from "../images/green_check.png"
 import {UserStats} from "../components/UserStats";
 
 
@@ -33,8 +33,11 @@ export const User = () => {
     const key = Cookies.get('key');
 
     const getResponse = async () => {
-        // @ts-ignore
-        await axios.get('/api/dashboard/user?userId=' + auth.id, {withCredentials: false, headers:{'key': key, 'content-type':'application/json'}}).then(
+
+        await axios.get('/api/dashboard/user?userId=' + auth.id,
+            // @ts-ignore
+            {withCredentials: false, headers:{'key': key, 'content-type':'application/json'}})
+            .then(
             (response) => {
                 setData(response.data)
                 console.log("setting data - dashboard.tsx getResponse()")
@@ -53,8 +56,12 @@ export const User = () => {
         //const id = e.target.id
         console.log(id + " - from handleCheck Dashboard.tsx")
 
-        // @ts-ignore
-        await axios.post('/api/receipts', {"assignmentId": id, "arb": 1}, {withCredentials: false, headers:{'key': key}}).then(
+
+        await axios.post('/api/receipts',
+            {"assignmentId": id, "arb": 1},
+            // @ts-ignore
+            {withCredentials: false, headers:{'key': key}})
+            .then(
             (response) => {
                 console.log(response.data.message)
                 response.data.message === 'receipt added.' ?
@@ -64,7 +71,7 @@ export const User = () => {
                     : console.log ('receipt not added apparently...')
 
             }
-        ).catch()
+        ).catch(err => console.log(err))
     }
 
     if (data === undefined) return (
@@ -89,18 +96,27 @@ export const User = () => {
                             {data?.chores.map(choreList => (
                                 <div className="rounded-4 shadow p-3 mb-3 bg-light text-start">
                                     <div key={choreList.at(0)?.id}>
-                                        <div><li key={choreList.at(0)?.id}>{choreList.at(0)?.name} </li>{choreList.at(0)?.description}</div>
+                                        <div>
+                                            <li key={choreList.at(0)?.id}>
+                                                {choreList.at(0)?.name}
+                                            </li>{choreList.at(0)?.description}
+                                        </div>
                                         <div key={choreList.at(0)?.id} className="text-end">
-                                            {choreList.map(chore =>(
-                                                <input key={chore.assignmentId} type="checkbox" defaultChecked={chore.done} onClick={() => handleCheck(chore.assignmentId)}/>
+                                            {choreList.map(chore =>(<>
+                                                <input key={chore.assignmentId}
+                                                       className="form-control-color active"
+                                                       type="checkbox"
+                                                       defaultChecked={chore.done}
+                                                       hidden={chore.done}
+                                                       onClick={() => handleCheck(chore.assignmentId)}/>
+                                                <img src={green_check} width={25} height={25} hidden={!chore.done}/>
+                                            </>
 
                                             ))}
                                         </div>
                                     </div>
                                 </div>
-                                /*<li key={chore.id}>{chore.name}  -  {chore.done}</li>*/
                             ))}
-
                         </>
                     </div>
                 </Col>

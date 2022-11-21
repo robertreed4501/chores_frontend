@@ -41,7 +41,8 @@ export const Messages = (props: MessageProps) => {
     const [auth, setAuth] = useContext(AuthContext);
 
     const getMessages = async () => {
-        const response = await axios.get("/api/messages?id=" + auth.id, {withCredentials: false, headers:{'key': auth.key}})
+        const response = await axios.get("/api/messages?id=" + auth.id,
+            {withCredentials: false, headers:{'key': auth.key}});
         setMessages(response.data);
     }
 

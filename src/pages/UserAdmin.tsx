@@ -1,14 +1,10 @@
-import React, {MouseEventHandler, ReactEventHandler, useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import axios from "../api/axios";
 import {AuthContext} from "../context/AuthProvider";
-
 import Cookies from "js-cookie";
-import Select from "react-select";
 import {AddUserModal} from "../components/AddUserModal";
 import {Button, Col, Container, Row, Table} from "react-bootstrap";
 import {EditUserModal} from "../components/EditUserModal";
-import {Dashboard} from "./Dashboard";
-import { Messages } from "../components/Messages";
 
 export const UserAdmin = () => {
 
@@ -42,8 +38,10 @@ export const UserAdmin = () => {
     const key = Cookies.get('key');
 
     const getUserInfo = async () => {
-        // @ts-ignore
-        const response = await axios.get('/api/user/mygroup?id=' + auth.groupId, {withCredentials: false, headers:{'key': key}});
+
+        const response = await axios.get('/api/user/mygroup?id=' + auth.groupId,
+            // @ts-ignore
+            {withCredentials: false, headers:{'key': key}});
         // @ts-ignore
         setUserInfo(response.data);
         console.log(JSON.stringify(userInfo))

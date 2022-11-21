@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from "react-bootstrap/Form";
-import {Col, Container, FloatingLabel, FormLabel, InputGroup, Row} from "react-bootstrap";
+import {Col, InputGroup} from "react-bootstrap";
 import axios from "../api/axios";
 import {AuthContext} from "../context/AuthProvider";
 import {AdminContext} from "../context/AdminProvider";

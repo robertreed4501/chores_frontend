@@ -47,23 +47,16 @@ export const LoginModal = (props: LoginModalProps) => {
                     withCredentials: false,
                 }
             );
-            console.log(JSON.stringify(response));
             if (response.data.error){
                 alert(response.data.error)
             }//else{
-                console.log("logged in with token:" + response.data.userResponse.key);
                 setAuth(response.data.userResponse);
                 localStorage.setItem('authKey', response.data.userResponse.key);
                 localStorage.setItem('loggedIn', String(true));
-                console.log(localStorage.getItem('auth') + " - auth from local storage in login modal");
-                /*setTimeout(() => 500);
-                console.log(auth.id + " auth after setAuth")*/
-                console.log(response.data.userResponse.groupId + " response.data.userResponse")
                 setUser('');
                 setPassword('');
                 setSuccess(true);
                 Cookies.set('key', response.data.userResponse.key, { expires: 7, sameSite: "none"});
-                console.log(Cookies.get('key') + "  - from login.tsx")
                 props.collapseNavbar();
                 response.data.userResponse.role === "USER" ?
                     navigate("/user", {replace: false}) :
@@ -73,7 +66,6 @@ export const LoginModal = (props: LoginModalProps) => {
         }catch (err){
             console.log(err)
         }
-        //success ? navigate("/user", {replace: true}) : navigate("/user", {replace: true});
 
     }
 
@@ -96,7 +88,11 @@ export const LoginModal = (props: LoginModalProps) => {
                     <Form>
                         <Form.Group className="mb-3" controlId="username">
                             <Form.Label>Email address</Form.Label>
-                            <Form.Control type="email" placeholder="Enter email" onChange={event => setUser(event.target.value)}/>
+                            <Form.Control
+                                type="email"
+                                placeholder="Enter email"
+                                onChange={event => setUser(event.target.value)}
+                            />
                             <Form.Text className="text-muted">
                                 We'll never share your email with anyone else.
                             </Form.Text>
@@ -104,7 +100,11 @@ export const LoginModal = (props: LoginModalProps) => {
 
                         <Form.Group className="mb-3" controlId="password">
                             <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" placeholder="Password" onChange={event => setPassword(event.target.value)}/>
+                            <Form.Control
+                                type="password"
+                                placeholder="Password"
+                                onChange={event => setPassword(event.target.value)}
+                            />
                         </Form.Group>
                     </Form>
                 </Modal.Body>

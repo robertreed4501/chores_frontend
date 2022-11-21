@@ -6,10 +6,19 @@ import {Container, ProgressBar, Table} from "react-bootstrap";
 export const GroupStats = () => {
 
     type GroupStats = [{
+        userId: number
         name: string
         percentDoneThisWeek: number
+        percentDoneLastWeek: number
         percentDoneAllTime: number
     }]
+
+    type ModalProps = {
+        userId: number
+        when: "thisWeek" | "lastWeek"
+        showModal: boolean
+        setShowModal: React.Dispatch<React.SetStateAction<boolean>>
+    }
 
     // @ts-ignore
     const [auth, setAuth] = useContext(AuthContext);
@@ -38,6 +47,7 @@ export const GroupStats = () => {
                 <thead>
                     <td>Name</td>
                     <td>% Done This Week</td>
+                    <td>% Done Last Week</td>
                     <td>% Done All Time</td>
                 </thead>
                 <tbody>
@@ -45,8 +55,25 @@ export const GroupStats = () => {
                     return(
                         <tr>
                             <td>{entry.name}</td>
-                            <td><ProgressBar now={entry.percentDoneThisWeek} label={entry.percentDoneThisWeek + '%'} /></td>
-                            <td><ProgressBar now={entry.percentDoneAllTime} label={entry.percentDoneAllTime + '%'} /></td>
+                            <td>
+                                <ProgressBar
+                                now={entry.percentDoneThisWeek}
+                                label={entry.percentDoneThisWeek + '%'}
+                                className="progress-bar-striped"
+                                />
+                            </td>
+                            <td>
+                                <ProgressBar
+                                    now={entry.percentDoneLastWeek}
+                                    label={entry.percentDoneLastWeek + '%'}
+                                    className="progress-bar-striped"/>
+                            </td>
+                            <td>
+                                <ProgressBar
+                                    now={entry.percentDoneAllTime}
+                                    label={entry.percentDoneAllTime + '%'}
+                                    className="progress-bar-striped"/>
+                            </td>
                         </tr>
                     )
                 })}

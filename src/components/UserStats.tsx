@@ -56,7 +56,7 @@ export const UserStats =  () => {
                         return(
                             <tr>
                                 <td>{stat.start}</td>
-                                <td><ProgressBar now={stat.percentDone} label={Math.round(stat.percentDone) + '%'} /> </td>
+                                <td><ProgressBar now={stat.percentDone} label={Math.round(stat.percentDone) + '%'} className="progress-bar-animated"/> </td>
                             </tr>
                         )
                     })

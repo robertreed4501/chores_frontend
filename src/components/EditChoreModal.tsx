@@ -111,8 +111,11 @@ export const EditChoreModal = (props: editChoreProps) => {
                         </Form.Group>
                         <Form.Label>Times per Week</Form.Label>
                         <InputGroup size="lg" className="w-50 m-3">
-
-                            <Button onClick={() => multiplier > 1 ? setMultiplier(multiplier - 1) : setMultiplier(1)} >-</Button>
+                            <Button
+                                onClick={() => multiplier > 1 ? setMultiplier(multiplier - 1) : setMultiplier(1)}
+                            >
+                                -
+                            </Button>
                             <Form.Control
                                 type="text"
                                 value={multiplier}

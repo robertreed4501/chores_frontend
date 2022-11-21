@@ -2,8 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import './App.css';
 import './index.css';
 import {Link, Navigate, Route, Routes, useNavigate} from "react-router-dom";
-import TestElement from "./components/TestElement";
-import OtherTest from "./components/OtherTest";
+import Homepage from "./components/Homepage";
 import {Login} from "./pages/login";
 import {User as UserPage} from "./pages/User";
 import {Register} from "./pages/Register";
@@ -19,12 +18,6 @@ import {AuthContext} from "./context/AuthProvider";
 import {LoginModal} from "./components/LoginModal";
 import axios from "./api/axios";
 import {GroupStats} from "./components/GroupStats";
-
-
-
-
-
-
 
 function App() {
 // @ts-ignore
@@ -58,7 +51,9 @@ function App() {
     const checkAuth = async () => {
         if (localStorage.getItem('authKey')) {
             // @ts-ignore
-            const response = await axios.get('/api/user', {withCredentials: false, headers:{'key': localStorage.getItem('authKey').toString()}})
+            const response = await axios.get('/api/user',
+                // @ts-ignore
+                {withCredentials: false, headers:{'key': localStorage.getItem('authKey').toString()}})
             if (response.data.error){
                 alert(response.data.error)
                 localStorage.clear();
@@ -95,8 +90,7 @@ function App() {
             return(
             <><Nav className="me-auto">
                 <Nav.Link as={Link} to="/user" onClick={collapseNavbar}>My Chores</Nav.Link>
-                <Nav.Link as={Link} to="/messages" onClick={collapseNavbar}>Messages</Nav.Link>
-                <Nav.Link as={Link} to="/help" onClick={collapseNavbar}>Help</Nav.Link>
+
 
             </Nav>
                 <Nav>
@@ -150,11 +144,11 @@ function App() {
                 </Container>
             </Navbar>
 
-            <Container className="align-items-center align-self-center w-xs-100 w-lg-75 h-100 overflow-scroll pt-4 pb-2" style={{backgroundColor: "#f2f2f5"}}>
+            <Container
+                className="align-items-center align-self-center w-xs-100 w-lg-75 h-100 overflow-scroll pt-4 pb-2"
+                style={{backgroundColor: "#f2f2f5"}}>
                 <Routes>
                     <Route element={<PrivateRoutes/>} >
-
-                        <Route path="/test" element={<OtherTest />} />
 
                         <Route path="/user" element={<UserPage />} />
                         <Route path="/stats" element={<GroupStats />} />
@@ -164,11 +158,15 @@ function App() {
                         <Route path="/assignchores" element={<AssignChores />} />
                     </Route>
                     <Route path="/register" element={<Register />} />
-                    <Route path="/" element={<TestElement/>} />
+                    <Route path="/" element={<Homepage/>} />
                     <Route path="/login" element={<Login />} />
                 </Routes>
             </Container>
-        <footer className="bg-dark text-light align-items-center fixed-bottom"><h3 className="mx-auto">footer</h3></footer>
+        <footer className="bg-dark text-light align-items-center fixed-bottom">
+            <h5 className="mx-auto text-center">
+                ChoresGalore
+            </h5>
+        </footer>
         </div>
     );
 }

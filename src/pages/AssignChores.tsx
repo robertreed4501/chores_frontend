@@ -1,16 +1,13 @@
 import React, {useContext, useEffect, useState} from "react";
-import {ChoreTable} from "../components/ChoreTable";
 import {AuthContext} from "../context/AuthProvider";
 import axios from "../api/axios";
 import Cookies from "js-cookie";
 import Select from "react-select";
 import {Button, Col, Container, Form, Row, Table} from "react-bootstrap";
-import {render} from "react-dom";
 import {AdminContext} from "../context/AdminProvider";
 import {Link, useNavigate} from "react-router-dom";
 import {AddChoreModal} from "../components/AddChoreModal";
 import {EditChoreModal} from "../components/EditChoreModal";
-
 
 export const AssignChores = () => {
 
@@ -37,9 +34,7 @@ export const AssignChores = () => {
     type ChoreListType = [{
         id: number
         name: string
-        choreLevel: "EASY" | "MEDIUM" | "HARD"
         multiplier: number
-        scope: "PERSONAL" | "GROUP"
         selected: boolean
         description: string
     }]
@@ -61,56 +56,46 @@ export const AssignChores = () => {
 
     const [userList, setUserList] = useState<UserListType>();
     const [selectedUser, setSelectedUser] = useState<UserType>();
-    const [choreList, setChoreList] = useState<ChoreListType>([{id: 0, name:"", choreLevel:"EASY", multiplier: 1, scope:"PERSONAL", selected: false, description:''}]);
-    const [assignedChoresList, setAssignedChoresList] = useState<ChoreListType>();
+    const [choreList, setChoreList] = useState<ChoreListType>([{
+        id: 0,
+        name:"",
+        multiplier: 1, selected: false, description:''}]);
     const [searchText, setSearchText] = useState<string>('');
     const [selectedChores, setSelectedChores] = useState<number[]>([]);
     const [rerender, setRerender] = useState(false);
     const [isDashboardSet, setIsDashboardSet] = useState(false);
-    const [hideLoadChoresButton, setHideLoadChoresButton] = useState(true);
-
-
-    const key = Cookies.get('key');
-
-    // @ts-ignore
+       // @ts-ignore
     const [auth, setAuth] = useContext(AuthContext);
     // @ts-ignore
     const [dashboard, setDashboard] = useContext<dashCard>(AdminContext);
 
+    const key = Cookies.get('key');
 
-
-    console.log(auth.id + " - auth from assignChores.tsx");
     //get all users in group to list in dropdown
     const getUserList = async (userId: number | undefined) => {
-        // @ts-ignore
-        await axios.get('/api/user/mygroup?id=' + auth.groupId, {withCredentials: false, headers:{'key': key}}).then(
-            (response) => {
-                console.log(response.data);
-                setUserList(response.data);
+
+        await axios.get('/api/user/mygroup?id=' + auth.groupId,
+            // @ts-ignore
+            {withCredentials: false, headers:{'key': key}})
+            .then(
+                (response) => {
+                    setUserList(response.data);
             }
         ).catch((error) => console.log(error));
     }
 
     const getChoreList = async (groupId: number | undefined) => {
-        // @ts-ignore
-        await axios.get('/api/chores/mygroup?id=' + auth.groupId, {withCredentials: false, headers:{'key': key}}).then(
-            (response) => {
-                console.log(response.data + " at getChoreList()");
-                setChoreList(response.data);
+
+        await axios.get('/api/chores/mygroup?id=' + auth.groupId,
+            // @ts-ignore
+            {withCredentials: false, headers:{'key': key.toString()}})
+            .then(
+                (response) => {
+                    setChoreList(response.data);
             }
         ).catch((error) => console.log(error));
-        choreList === undefined || choreList.length < 1 ? setHideLoadChoresButton(false) : setHideLoadChoresButton(true);
     }
 
-    const getAssignmentsByUser = async (userId: number | undefined) => {
-        // @ts-ignore
-        await axios.get('/api/assignments?id=' + userId, {withCredentials: false, headers:{'key': key}}).then(
-            (response) => {
-                console.log(response.data);
-                setAssignedChoresList(response.data);
-            }
-        ).catch((error) => console.log(error));
-    }
 
     useEffect(() =>{
         if (auth.groupId){
@@ -121,21 +106,10 @@ export const AssignChores = () => {
 
     },[auth])
 
-   /* useEffect(() => {
-        getChoreList(auth.groupId).then(r => null);
-    }, [dashboard])*/
-    //value=user.id ,
-
-
-
     let selectUserList: selectedUserList = [{value: 0, label: ""}];
     userList?.forEach(user => {
         selectUserList.push({value:user.id, label:user.firstName + " " + user.lastName});
     })
-
-    console.log(selectUserList?.at(0)?.label + " userList from AssignChores")
-    console.log(userList?.at(0)?.id + " userList.at(0).id")
-
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value);
@@ -147,7 +121,6 @@ export const AssignChores = () => {
         //
     }
 
-    //TODO change handleCheck method to run forEach through tempList and insert correct boolean value
     const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
         let tempSelectedChores: number[];
         tempSelectedChores = selectedChores;
@@ -214,7 +187,6 @@ export const AssignChores = () => {
             headers: { 'Content-Type': 'application/json' },
             withCredentials: false,
         });
-        //set response as users new dashcard in dashboard array.....and restart spring server before you try the above...
         // @ts-ignore
         setDashboard(response.data);
 
@@ -227,14 +199,18 @@ export const AssignChores = () => {
     }
 
     const handleUnassignChores = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        const response = await axios.delete("/api/assignments/delete/" + selectedUser?.id);
-        alert(response.data)
-        await getResponse();
+        if (selectedUser !== undefined){
+            const response = await axios.delete("/api/assignments/delete/" + selectedUser?.id);
+            alert(response.data)
+            await getResponse();
+        }
+
     }
 
 
     const getResponse = async () => {
-        const response = await axios.get('/api/dashboard', {withCredentials: false, headers:{'key': auth.key}});
+        const response = await axios.get('/api/dashboard',
+            {withCredentials: false, headers:{'key': auth.key}});
 
 
                 console.log("setting data - dashboard.tsx getResponse()");
@@ -245,11 +221,6 @@ export const AssignChores = () => {
 
     }
 
-    let navigate = useNavigate();
-    const handleClick = () => {
-        navigate("/useradmin", {replace: false})
-    }
-
     const setNewChoreList = (choreList: ChoreListType) : void=> {
         setChoreList(choreList);
     }
@@ -257,7 +228,6 @@ export const AssignChores = () => {
     const handleLoadSampleChores = async () => {
         const response = await axios.post("/api/chores/loadsamples/" + auth.groupId);
         setChoreList(response.data);
-        setHideLoadChoresButton(true);
     }
 
     if (!isDashboardSet){
@@ -314,7 +284,9 @@ export const AssignChores = () => {
                                                             <Form.Check
                                                                 key={index}
                                                                 id={chore.id.toString()}
-                                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleCheck(e)}
+                                                                onChange={
+                                                                (e: React.ChangeEvent<HTMLInputElement>) =>
+                                                                    handleCheck(e)}
                                                                 checked={chore.selected}
 
                                                             />
@@ -322,8 +294,22 @@ export const AssignChores = () => {
                                                     <td>{chore.name}</td>
                                                     <td>{chore.multiplier.toString()}</td>
                                                     <td>
-                                                        <EditChoreModal id={chore.id} name={chore.name} multiplier={chore.multiplier} description={chore.description} setNewChoreList={setNewChoreList}/>
-                                                        <Button variant={"outline-primary"} id={chore.id.toString()} value={"delete"} onClick={handleDeleteChore}>Delete</Button>
+                                                        <EditChoreModal
+                                                            id={chore.id}
+                                                            name={chore.name}
+                                                            multiplier={chore.multiplier}
+                                                            description={chore.description}
+                                                            setNewChoreList={setNewChoreList}
+                                                        />
+                                                        <Button
+                                                            variant={"outline-primary"}
+                                                            id={chore.id.toString()}
+                                                            value={"delete"}
+                                                            onClick={handleDeleteChore}
+                                                            className="ms-1"
+                                                        >
+                                                            Delete
+                                                        </Button>
                                                     </td>
                                                 </tr>)
                                         }
@@ -340,8 +326,22 @@ export const AssignChores = () => {
                                                         /></td>
                                                         <td>{chore.name}</td>
                                                         <td>{chore.multiplier.toString()}</td>
-                                                        <td><EditChoreModal id={chore.id} name={chore.name} multiplier={chore.multiplier} description={chore.description} setNewChoreList={setNewChoreList}/>
-                                                        <Button variant={"outline-primary"} id={chore.id.toString()} value={"delete"} onClick={handleDeleteChore}>Delete</Button></td>
+                                                        <td><EditChoreModal
+                                                            id={chore.id}
+                                                            name={chore.name}
+                                                            multiplier={chore.multiplier}
+                                                            description={chore.description}
+                                                            setNewChoreList={setNewChoreList}
+                                                        />
+                                                        <Button
+                                                            variant={"outline-primary"}
+                                                            id={chore.id.toString()}
+                                                            value={"delete"}
+                                                            onClick={handleDeleteChore}
+                                                        >
+                                                            Delete
+                                                        </Button>
+                                                        </td>
                                                     </tr>)
                                             }
                                         }
@@ -355,7 +355,13 @@ export const AssignChores = () => {
                             <AddChoreModal getChoreList={getChoreList}/>
                             <Button variant={"outline-primary"} onClick={handleAssignChores} className="m-2">
                                 Assign Chores to {selectedUser?.name}</Button>
-                            <Button variant={"outline-primary"} onClick={handleLoadSampleChores} className="m-2" hidden={hideLoadChoresButton}>Load Sample Chores</Button>
+                            <Button
+                                variant={"outline-primary"}
+                                onClick={handleLoadSampleChores}
+                                className="m-2"
+                            >L
+                                oad Sample Chores
+                            </Button>
                         </>
                         </Container>
                     </Col>
@@ -392,7 +398,15 @@ export const AssignChores = () => {
                                                     <tr key={choreArray.at(0)?.id}>
                                                         <td>{choreArray.at(0)?.name}</td>
                                                         <td>{choreArray.length}</td>
-                                                        <td><Button variant={"outline-primary"} id={choreArray.at(0)?.assignmentId} value={"delete"} onClick={handleDelete}>Delete</Button></td>
+                                                        <td>
+                                                            <Button
+                                                                variant={"outline-primary"}
+                                                                id={choreArray.at(0)?.assignmentId}
+                                                                value={"delete"} onClick={handleDelete}
+                                                            >
+                                                                Delete
+                                                            </Button>
+                                                        </td>
                                                     </tr>
                                                 )
                                             })
@@ -403,16 +417,17 @@ export const AssignChores = () => {
                                 </tbody>
                             </Table>
                             </div>
-                            <Button variant={"outline-primary"} onClick={handleUnassignChores} className="m-2">Clear All Assignments</Button>
+                            <Button
+                                variant={"outline-primary"}
+                                onClick={handleUnassignChores}
+                                className="m-2"
+                            >
+                                Clear All Assignments
+                            </Button>
                         </Container>
                     </Col>
                 </Row>
             </Container>
-
-
-
-                <Link to={"/useradmin"}>to user admin</Link>
-
         </Container>
     )
 }
