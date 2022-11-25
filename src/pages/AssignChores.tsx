@@ -230,7 +230,7 @@ export const AssignChores = () => {
         setChoreList(response.data);
     }
 
-    if (!isDashboardSet){
+    if (dashboard === undefined){
         return(
             <>
                 <h3>
@@ -359,8 +359,7 @@ export const AssignChores = () => {
                                 variant={"outline-primary"}
                                 onClick={handleLoadSampleChores}
                                 className="m-2"
-                            >L
-                                oad Sample Chores
+                            >Load Sample Chores
                             </Button>
                         </>
                         </Container>
