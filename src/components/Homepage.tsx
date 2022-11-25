@@ -17,7 +17,7 @@ function Homepage() {
     return (
         <Container fluid className="mt-4 shadow rounded-4 p-3 overflow-hidden text-center">
             <h1>Messy kids? .... We can help!</h1>
-            <p><h3>Don't just give them chores, give them ChoresGalore!</h3></p>
+            <h3>Don't just give them chores, give them ChoresGalore!</h3>
             <img src={kidsCleaning} className="align-self-center my-auto mx-auto"/>
             <br /><br /><br />
             <p>Our New Digital version of our classic chore chart will make organizing your family's chores easy as pie!</p>
