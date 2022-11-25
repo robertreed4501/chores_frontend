@@ -45,18 +45,21 @@ export const GroupStats = () => {
             <h3>Group Stats</h3>
             <Table striped hover>
                 <thead>
+                <tr>
                     <td>Name</td>
                     <td>% Done This Week</td>
                     <td>% Done Last Week</td>
                     <td>% Done All Time</td>
+                </tr>
                 </thead>
                 <tbody>
                 {groupStats.map(entry => {
                     return(
-                        <tr>
+                        <tr key={entry.userId}>
                             <td>{entry.name}</td>
                             <td>
                                 <ProgressBar
+                                    key={entry.userId + "-pdtw"}
                                 now={entry.percentDoneThisWeek}
                                 label={entry.percentDoneThisWeek + '%'}
                                 className="progress-bar-striped"
@@ -64,12 +67,14 @@ export const GroupStats = () => {
                             </td>
                             <td>
                                 <ProgressBar
+                                    key={entry.userId + "-pdlw"}
                                     now={entry.percentDoneLastWeek}
                                     label={entry.percentDoneLastWeek + '%'}
                                     className="progress-bar-striped"/>
                             </td>
                             <td>
                                 <ProgressBar
+                                    key={entry.userId + "-pdat"}
                                     now={entry.percentDoneAllTime}
                                     label={entry.percentDoneAllTime + '%'}
                                     className="progress-bar-striped"/>
