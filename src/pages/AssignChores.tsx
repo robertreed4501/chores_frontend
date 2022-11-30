@@ -241,7 +241,7 @@ export const AssignChores = () => {
     }
 
     return (
-        <Container className="p-3 bg-body mt-4 text-center">
+        <Container className="p-3 bg-body mt-4 text-center rounded-4 shadow">
             <Container className="p-3 border-light border-2 rounded-4 shadow">
                 <Row className="my-auto">
                     <h3>Assign Chores</h3>
@@ -338,6 +338,7 @@ export const AssignChores = () => {
                                                             id={chore.id.toString()}
                                                             value={"delete"}
                                                             onClick={handleDeleteChore}
+                                                            className="ms-1"
                                                         >
                                                             Delete
                                                         </Button>
@@ -359,8 +360,8 @@ export const AssignChores = () => {
                                 variant={"outline-primary"}
                                 onClick={handleLoadSampleChores}
                                 className="m-2"
-                            >L
-                                oad Sample Chores
+                            >
+                                Load Sample Chores
                             </Button>
                         </>
                         </Container>
