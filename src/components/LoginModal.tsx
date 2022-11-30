@@ -49,7 +49,7 @@ export const LoginModal = (props: LoginModalProps) => {
             );
             if (response.data.error){
                 alert(response.data.error)
-            }//else{
+            }else{
                 setAuth(response.data.userResponse);
                 localStorage.setItem('authKey', response.data.userResponse.key);
                 localStorage.setItem('loggedIn', String(true));
@@ -61,7 +61,7 @@ export const LoginModal = (props: LoginModalProps) => {
                 response.data.userResponse.role === "USER" ?
                     navigate("/user", {replace: false}) :
                     navigate("/dashboard")
-            //}
+            }
 
         }catch (err){
             console.log(err)
