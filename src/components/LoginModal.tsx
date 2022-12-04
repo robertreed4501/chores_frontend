@@ -43,7 +43,8 @@ export const LoginModal = (props: LoginModalProps) => {
                 JSON.stringify({username: user, password}),
                 //{"username":{user}, "password":{password}},
                 {
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json' ,
+                        'Access-Control-Allow-Origin': '*'},
                     withCredentials: false,
                 }
             );
