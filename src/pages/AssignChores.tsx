@@ -5,7 +5,6 @@ import Cookies from "js-cookie";
 import Select from "react-select";
 import {Button, Col, Container, Form, Row, Table} from "react-bootstrap";
 import {AdminContext} from "../context/AdminProvider";
-import {Link, useNavigate} from "react-router-dom";
 import {AddChoreModal} from "../components/AddChoreModal";
 import {EditChoreModal} from "../components/EditChoreModal";
 
@@ -88,7 +87,7 @@ export const AssignChores = () => {
 
         await axios.get('/api/chores/mygroup?id=' + auth.groupId,
             // @ts-ignore
-            {withCredentials: false, headers:{'key': key.toString()}})
+            {withCredentials: false, headers:{'key': auth.authKey}})
             .then(
                 (response) => {
                     setChoreList(response.data);
@@ -99,7 +98,7 @@ export const AssignChores = () => {
 
     useEffect(() =>{
         if (auth.groupId){
-            getResponse();
+            getResponse().then(_ => null);
             getUserList(auth.id).then(() => null);
             getChoreList(auth.groupId).then(() => null);
         }
@@ -167,8 +166,7 @@ export const AssignChores = () => {
         // @ts-ignore
         setDashboard(response.data);
         setSelectedChores([]);
-        let tempChoreList = choreList;
-        tempChoreList.forEach( chore => {
+        choreList.forEach(chore => {
             chore.selected = false;
         })
 
@@ -198,7 +196,7 @@ export const AssignChores = () => {
         await getChoreList(auth.groupId);
     }
 
-    const handleUnassignChores = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleUnassignChores = async () => {
         if (selectedUser !== undefined){
             const response = await axios.delete("/api/assignments/delete/" + selectedUser?.id);
             alert(response.data)
