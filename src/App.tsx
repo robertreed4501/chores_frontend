@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import './App.css';
 import './index.css';
-import {Link, Navigate, Route, Routes, useNavigate} from "react-router-dom";
+import {Link, Route, Routes, useNavigate} from "react-router-dom";
 import Homepage from "./components/Homepage";
 import {Login} from "./pages/login";
 import {User as UserPage} from "./pages/User";
@@ -11,13 +11,14 @@ import {PrivateRoutes} from "./PrivateRoutes";
 import {AssignChores} from "./pages/AssignChores";
 // @ts-ignore
 import Sidebar from "react-bootstrap-sidebar";
-import {Button, Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
+import {Button, Container, Nav, Navbar} from "react-bootstrap";
 import {UserAdmin} from "./pages/UserAdmin";
 import Cookies from "js-cookie";
 import {AuthContext} from "./context/AuthProvider";
 import {LoginModal} from "./components/LoginModal";
 import axios from "./api/axios";
 import {GroupStats} from "./components/GroupStats";
+import {About} from "./pages/About";
 
 function App() {
 // @ts-ignore
@@ -59,15 +60,12 @@ function App() {
                 localStorage.clear();
             }
             setAuth(await response.data.userResponse);
-            console.log(JSON.stringify(auth) + " - checkAuth json(auth)");
-            // @ts-ignore
-            console.log(JSON.stringify(localStorage.getItem('authKey')) + " - checkAuth json(localStorage.getItem)")
         }
     }
 
     const createNavbar = () => {
         if (auth === undefined) {
-            checkAuth();
+            checkAuth().then(_ => null);
             return(
                 <>
                     <h3>
@@ -114,7 +112,7 @@ function App() {
         }
     }
 
-    useEffect(() => {checkAuth()}, [])
+    useEffect(() => {checkAuth().then(_ => null)}, [])
 
 
   // @ts-ignore
@@ -160,6 +158,7 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/" element={<Homepage/>} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/about" element={<About />} />
                 </Routes>
             </Container>
         <footer className="bg-dark text-light align-items-center fixed-bottom">

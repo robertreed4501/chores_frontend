@@ -13,13 +13,6 @@ export const GroupStats = () => {
         percentDoneAllTime: number
     }]
 
-    type ModalProps = {
-        userId: number
-        when: "thisWeek" | "lastWeek"
-        showModal: boolean
-        setShowModal: React.Dispatch<React.SetStateAction<boolean>>
-    }
-
     // @ts-ignore
     const [auth, setAuth] = useContext(AuthContext);
     const [groupStats, setGroupStats] = useState<GroupStats>();
@@ -32,7 +25,7 @@ export const GroupStats = () => {
         }
     }
 
-    useEffect(() => {if (auth !== undefined) getGroupStats()}, [auth])
+    useEffect(() => {if (auth !== undefined) getGroupStats().then(_ => null)}, [auth])
 
     if (auth === undefined || groupStats === undefined) return(
         <Container className="rounded-4 shadow mb-3 p-3">

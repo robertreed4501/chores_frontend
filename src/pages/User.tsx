@@ -89,7 +89,7 @@ export const User = () => {
         <Container className="rounded-4 shadow p-3 mt-4 text-center">
             <Row>
                 <Col md={6}>
-                    <div key={data?.userId} className="col-12 card-body border-dark border-4 rounded-4 shadow p-3 bg-white">
+                    <div key={data?.userId} className="col-12 card-body border-dark border-4 rounded-4 shadow p-3 bg-light">
                         <>
                         <h2 key={data?.userId}>{data?.name}'s chores</h2>
 
